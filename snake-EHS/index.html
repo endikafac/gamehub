@@ -62,6 +62,7 @@
             background: #0d1f0d;
             width: 100%;
             aspect-ratio: 1;
+            touch-action: none;
         }
 
         /* overlays */
@@ -101,22 +102,28 @@
 
         #hint { font-size: .72rem; color: #64748b; font-family: 'Roboto', sans-serif; }
 
-        /* touch controls */
+        /* touch controls — cross layout */
         #touch-pad { display: none; }
         @media (pointer: coarse) { #touch-pad { display: grid; } }
         #touch-pad {
-            grid-template-columns: 56px 56px 56px;
-            grid-template-rows: 56px 56px;
-            gap: 4px;
+            grid-template-columns: 68px 68px 68px;
+            grid-template-rows: 68px 68px 68px;
+            gap: 6px;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
         }
-        .tch { background: #1e293b; border: 1px solid #334155; border-radius: 8px;
-               font-size: 1.2rem; color: #e2e8f0; cursor: pointer;
-               display: flex; align-items: center; justify-content: center; }
-        #tup     { grid-column: 1; grid-row: 1; }
-        #tpause  { grid-column: 3; grid-row: 1; }
+        .tch { background: #1e293b; border: 2px solid #334155; border-radius: 12px;
+               font-size: 1.5rem; color: #e2e8f0; cursor: pointer;
+               display: flex; align-items: center; justify-content: center;
+               touch-action: manipulation; user-select: none; -webkit-user-select: none;
+               transition: background 0.1s, transform 0.1s; }
+        .tch:active { background: #7c3aed; transform: scale(0.92); border-color: #a78bfa; }
+        #tup     { grid-column: 2; grid-row: 1; }
         #tleft   { grid-column: 1; grid-row: 2; }
-        #tdown   { grid-column: 2; grid-row: 2; }
+        #tpause  { grid-column: 2; grid-row: 2; }
         #tright  { grid-column: 3; grid-row: 2; }
+        #tdown   { grid-column: 2; grid-row: 3; }
     </style>
 </head>
 <body>
@@ -191,17 +198,17 @@ const I18N = {
     'es-ES': { score:'Puntuación', best:'Récord', over:'¡Juego terminado!',
                again:'Jugar de nuevo', hub:'← Games Hub', paused:'⏸ Pausado',
                pauseHint:'Pulsa P o Escape para continuar',
-               hint:'Controles: flechas o WASD · P / Escape = pausa',
+               hint:'Flechas / WASD / desliza / botones · P = pausa',
                final:'Puntuación final:' },
     'en-US': { score:'Score', best:'High Score', over:'Game Over!',
                again:'Play Again', hub:'← Games Hub', paused:'⏸ Paused',
                pauseHint:'Press P or Escape to continue',
-               hint:'Controls: arrow keys or WASD · P / Escape = pause',
+               hint:'Arrows / WASD / swipe / buttons · P = pause',
                final:'Final score:' },
     'eu-ES': { score:'Puntuazioa', best:'Errekorra', over:'Jokoa bukatu da!',
                again:'Berriro jolastu', hub:'← Games Hub', paused:'⏸ Geldituta',
                pauseHint:'Sakatu P edo Escape jarraitzeko',
-               hint:'Kontrolak: geziak edo WASD · P / Escape = pausa',
+               hint:'Geziak / WASD / irristatu / botoiak · P = pausa',
                final:'Azken puntuazioa:' }
 };
 
@@ -505,17 +512,21 @@ $('tpause')?.addEventListener('click', () => {
     else { $('ov-pause').classList.remove('show'); lastTick = performance.now(); }
 });
 
-// Swipe
+// Swipe on canvas
 let tx=null,ty=null;
-canvas.addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; ty=e.touches[0].clientY; },{passive:true});
+canvas.addEventListener('touchstart', e=>{
+    tx=e.touches[0].clientX; ty=e.touches[0].clientY;
+    e.preventDefault();
+},{passive:false});
+canvas.addEventListener('touchmove', e=>{ e.preventDefault(); },{passive:false});
 canvas.addEventListener('touchend', e=>{
     if(tx===null) return;
     const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty;
     tx=null; ty=null;
-    if(Math.abs(dx)<10&&Math.abs(dy)<10) return;
+    if(Math.abs(dx)<30&&Math.abs(dy)<30) return;
     if(Math.abs(dx)>Math.abs(dy)) tryDir(dx>0?{x:1,y:0}:{x:-1,y:0});
     else                           tryDir(dy>0?{x:0,y:1}:{x:0,y:-1});
-},{passive:true});
+});
 
 // Language change
 document.addEventListener('platformLanguageChanged', applyI18n);

@@ -29,14 +29,12 @@
     <!-- ==================== PANTALLA DE LOGIN ==================== -->
     <div id="login-screen" class="screen active" role="main" aria-label="Inicio de sesión">
         <div class="container">
-            <header class="game-header">
-                <h1 class="game-title" aria-label="MathMaster">
-                    <span class="math-symbol" aria-hidden="true">+</span>
-                    MathMaster
-                    <span class="math-symbol" aria-hidden="true">=</span>
-                </h1>
-                <p class="game-subtitle" data-i18n="appSubtitle">Desafío por Puntuación Fija</p>
-            </header>
+            <h1 class="game-title" aria-label="MathMaster">
+                <span class="math-symbol" aria-hidden="true">+</span>
+                MathMaster
+                <span class="math-symbol" aria-hidden="true">=</span>
+            </h1>
+            <p class="game-subtitle" data-i18n="appSubtitle">Desafío por Puntuación Fija</p>
 
             <section class="login-section" aria-labelledby="login-heading">
                 <h2 class="section-title" id="login-heading" data-i18n="selectOrCreateProfile">
@@ -72,26 +70,13 @@
                 </div>
             </section>
 
-            <footer class="game-footer">
-                <p data-i18n="developedBy">Games Hub | MathMaster v3.0</p>
-            </footer>
         </div>
     </div>
 
     <!-- ==================== PANTALLA DE SELECCIÓN ==================== -->
     <div id="selection-screen" class="screen">
         <div class="container">
-            <header class="game-header">
-                <a href="../index.html" class="back-to-hub-btn" aria-label="Volver al Games Hub">
-                    ← <span data-i18n="backToHub">Games Hub</span>
-                </a>
-                <h1 class="game-title" aria-label="MathMaster">
-                    <span class="math-symbol" aria-hidden="true">+</span>
-                    MathMaster
-                    <span class="math-symbol" aria-hidden="true">=</span>
-                </h1>
-                <p class="game-subtitle" data-i18n="appSubtitle">Desafío por Puntuación Fija</p>
-            </header>
+            <h2 class="game-subtitle selection-title" data-i18n="appSubtitle">Desafío por Puntuación Fija</h2>
 
             <!-- Selección de Operación -->
             <section class="selection-section" aria-labelledby="op-heading">
@@ -188,9 +173,6 @@
                 </button>
             </div>
 
-            <footer class="game-footer">
-                <p data-i18n="developedBy">Games Hub | MathMaster v3.0</p>
-            </footer>
         </div>
     </div>
 
@@ -538,31 +520,6 @@
                 <button class="action-button secondary" id="confirm-cancel-btn" type="button" data-i18n="cancel">Cancelar</button>
                 <button class="action-button danger"    id="confirm-ok-btn"     type="button" data-i18n="confirm">Confirmar</button>
             </div>
-        </div>
-    </div>
-
-    <!-- ==================== MENÚ DE USUARIO ==================== -->
-    <div id="user-menu" class="dropdown-menu hidden" role="menu" aria-label="Menú de usuario">
-        <button class="menu-item" id="menu-profile"      role="menuitem" type="button"><span aria-hidden="true">👤</span> <span data-i18n="myProfile">Mi Perfil</span></button>
-        <button class="menu-item" id="menu-stats"        role="menuitem" type="button"><span aria-hidden="true">📊</span> <span data-i18n="statistics">Estadísticas</span></button>
-        <button class="menu-item" id="menu-achievements" role="menuitem" type="button"><span aria-hidden="true">🏆</span> <span data-i18n="achievements">Logros</span></button>
-        <hr class="menu-divider" role="separator">
-        <button class="menu-item" id="menu-logout"       role="menuitem" type="button"><span aria-hidden="true">🚪</span> <span data-i18n="logout">Cerrar Sesión</span></button>
-    </div>
-
-    <!-- ==================== TOP BAR (badge + theme – hidden, replaced by platform header) ==================== -->
-    <div class="top-bar" id="top-bar-game" style="display:none">
-        <div class="user-badge hidden" id="user-badge">
-            <span class="user-avatar" id="user-avatar-badge">👤</span>
-            <span class="user-name" id="current-user-name">Jugador</span>
-            <button class="user-menu-btn" id="user-menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Menú de usuario">▼</button>
-        </div>
-        <div class="top-controls">
-            <button id="settings-btn" class="icon-btn" type="button" aria-label="Configuración">⚙️</button>
-            <button id="theme-toggle" class="icon-btn" type="button" aria-label="Cambiar tema">
-                <span class="theme-icon theme-icon-dark" aria-hidden="true">🌙</span>
-                <span class="theme-icon theme-icon-light" aria-hidden="true">☀️</span>
-            </button>
         </div>
     </div>
 

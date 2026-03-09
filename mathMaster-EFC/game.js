@@ -1567,11 +1567,6 @@ function showScreen(screenName) {
     DOM.achievementsScreen?.classList.remove('active');
     DOM.profileScreen?.classList.remove('active');
 
-    // Mostrar/ocultar barra superior
-    if (DOM.topBar) {
-        DOM.topBar.style.display = screenName === 'game' ? 'none' : 'flex';
-    }
-
     // Mostrar pantalla correspondiente y mover el foco para lectores de pantalla
     let activeScreen = null;
     switch (screenName) {
