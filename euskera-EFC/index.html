@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="eu" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Nor-Nori-Nork">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <meta name="description" content="Nor-Nori-Nork — Domina el auxiliar euskérico con ejercicios interactivos de selección múltiple, completar frases y comprensión auditiva.">
+    <title>Nor-Nori-Nork — Games Hub</title>
+    <link rel="stylesheet" href="../platform/platform.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="platform-header"></div>
+<main id="main-content" tabindex="-1">
+
+<!-- SCREEN 1: HOME -->
+<section id="eu-screen-home" class="eu-screen active" aria-label="Inicio">
+    <div class="eu-page">
+        <div class="eu-home-header">
+            <h1>🏔️ Nor-Nori-<span>Nork</span></h1>
+            <p>Domina el auxiliar euskérico</p>
+        </div>
+
+        <!-- Mode selector -->
+        <div class="eu-mode-cards">
+            <button class="eu-mode-card" data-mode="grammar" onclick="EuskeraGame.showMode('grammar')"
+                aria-label="Modo Gramática: Aprende el sistema Nor-Nori-Nork">
+                <span class="eu-mode-icon">🧠</span>
+                <h2>Gramática</h2>
+                <p>Aprende el sistema Nor-Nori-Nork</p>
+            </button>
+            <button class="eu-mode-card" data-mode="vocabulary" onclick="EuskeraGame.showMode('vocabulary')"
+                aria-label="Modo Vocabulario: Aprende palabras por temas">
+                <span class="eu-mode-icon">📚</span>
+                <h2>Vocabulario</h2>
+                <p>Aprende palabras por temas</p>
+            </button>
+        </div>
+
+        <!-- GRAMMAR MODE -->
+        <div id="eu-mode-grammar" class="eu-mode-section">
+
+            <!-- Theory panel (collapsible) -->
+            <div class="eu-panel" id="eu-theory-panel">
+                <button class="eu-panel-toggle" id="eu-theory-toggle" aria-expanded="false" aria-controls="eu-theory-body">
+                    📖 Teoría: el sistema NNK <span class="eu-toggle-icon">▼</span>
+                </button>
+                <div class="eu-panel-body" id="eu-theory-body" hidden>
+                    <div id="eu-theory-content"></div>
+                </div>
+            </div>
+
+            <!-- Level selector -->
+            <p class="eu-section-label">Elige el nivel</p>
+            <div class="eu-level-grid" id="eu-level-grid" role="list"></div>
+
+        </div>
+
+        <!-- VOCABULARY MODE -->
+        <div id="eu-mode-vocabulary" class="eu-mode-section hidden">
+            <div id="eu-vocab-topics-container"></div>
+            <!-- Topic words panel (shown when a topic card is clicked) -->
+            <div id="eu-topic-words-panel" class="eu-topic-words-panel hidden"></div>
+        </div>
+
+    </div>
+</section>
+
+<!-- SCREEN 2: GAME -->
+<section id="eu-screen-game" class="eu-screen" aria-label="Juego" aria-live="polite">
+    <div class="eu-page">
+        <!-- HUD -->
+        <div class="eu-hud">
+            <div class="eu-stat">
+                <div class="eu-stat-val" id="eu-score-val">0</div>
+                <div class="eu-stat-lbl">Puntos</div>
+            </div>
+            <div class="eu-stat">
+                <div class="eu-stat-val" id="eu-progress-val">1/10</div>
+                <div class="eu-stat-lbl">Pregunta</div>
+            </div>
+            <div class="eu-stat">
+                <div class="eu-stat-val" id="eu-streak-val">0</div>
+                <div class="eu-stat-lbl">Racha</div>
+            </div>
+        </div>
+        <!-- Progress bar -->
+        <div class="eu-progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="eu-progress-bar-wrap">
+            <div class="eu-progress-fill" id="eu-progress-fill" style="width:0%"></div>
+        </div>
+        <!-- Level type badge -->
+        <p class="eu-level-badge" id="eu-level-badge">Nivel 1 — Más fácil (auxiliares básicos)</p>
+
+        <!-- Dynamic question area — rendered by JS -->
+        <div id="eu-question-area"></div>
+
+        <!-- Feedback -->
+        <div class="eu-feedback" id="eu-feedback" role="alert" aria-live="assertive"></div>
+
+        <!-- Action row -->
+        <div class="eu-action-row">
+            <button class="eu-btn eu-btn-primary hidden" id="eu-next-btn">Siguiente →</button>
+            <button class="eu-btn eu-btn-ghost" id="eu-quit-btn">Salir</button>
+        </div>
+    </div>
+</section>
+
+<!-- SCREEN 3: RESULTS -->
+<section id="eu-screen-results" class="eu-screen" aria-label="Resultados">
+    <div class="eu-page">
+        <div class="eu-result-card">
+            <h2 id="eu-result-title">¡Resultados!</h2>
+            <div class="eu-result-stars" id="eu-result-stars">⭐⭐⭐</div>
+            <div class="eu-result-big" id="eu-result-score">0</div>
+            <div class="eu-result-big-lbl">puntos</div>
+            <div class="eu-result-grid">
+                <div class="eu-result-item">
+                    <div class="eu-result-item-val" id="eu-result-correct">0/0</div>
+                    <div class="eu-result-item-lbl">Correctas</div>
+                </div>
+                <div class="eu-result-item">
+                    <div class="eu-result-item-val" id="eu-result-time">0:00</div>
+                    <div class="eu-result-item-lbl">Tiempo</div>
+                </div>
+                <div class="eu-result-item">
+                    <div class="eu-result-item-val" id="eu-result-level">1</div>
+                    <div class="eu-result-item-lbl">Nivel</div>
+                </div>
+            </div>
+            <div class="eu-result-btns">
+                <button class="eu-btn eu-btn-secondary" id="eu-retry-btn">Reintentar</button>
+                <button class="eu-btn eu-btn-primary" id="eu-next-level-btn">Nivel siguiente</button>
+                <button class="eu-btn eu-btn-ghost" id="eu-menu-btn">Menú</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<!-- Quit modal -->
+<div id="eu-quit-modal" class="eu-modal hidden" role="dialog" aria-modal="true" tabindex="-1">
+    <div class="eu-modal-dialog">
+        <h3>¿Salir del ejercicio?</h3>
+        <p>Se perderá el progreso actual.</p>
+        <div class="eu-modal-actions">
+            <button class="eu-btn eu-btn-secondary" id="eu-quit-cancel">Cancelar</button>
+            <button class="eu-btn eu-btn-primary" id="eu-quit-ok">Salir</button>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
+<script src="../platform/firebase-config.js"></script>
+<script src="../platform/i18n-platform.js"></script>
+<script src="../platform/auth.js"></script>
+<script src="../platform/firestore.js"></script>
+<script src="../platform/achievements.js"></script>
+<script src="../platform/platform-header.js"></script>
+<script src="data.js"></script>
+<script src="game.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    PlatformHeader.init({ gameName: 'Nor-Nori-Nork', gameIcon: '🏔️', rootPath: '../' });
+    EuskeraGame.init();
+});
+</script>
+    <script src="../platform/register-sw.js"></script>
+</body>
+</html>

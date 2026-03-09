@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logros — Games Hub</title>
+    <link rel="stylesheet" href="platform.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="i18n-platform.js"></script>
+    <script src="auth.js"></script>
+    <script src="firestore.js"></script>
+    <script src="achievements.js"></script>
+    <script src="platform-header.js"></script>
+    <style>
+        body { background: var(--bg-page); color: var(--text-primary); }
+        .ach-page { max-width: 900px; margin: 0 auto; padding: 80px 16px 40px; }
+        .ach-section { margin-bottom: 32px; }
+        .ach-section-title {
+            font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700;
+            color: var(--hub-brand-color); text-transform: uppercase; letter-spacing: .1em;
+            margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color);
+        }
+        .ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+        .ach-card {
+            background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 16px; display: flex; align-items: flex-start; gap: 12px;
+            transition: transform 0.15s;
+        }
+        .ach-card.unlocked { border-color: var(--rarity-color, var(--border-color)); }
+        .ach-card.locked { opacity: 0.45; filter: grayscale(0.6); }
+        .ach-card:hover { transform: translateY(-2px); }
+        .ach-icon { font-size: 2rem; flex-shrink: 0; }
+        .ach-info { flex: 1; }
+        .ach-name { font-weight: 700; font-size: 0.9rem; color: var(--text-primary); }
+        .ach-desc { font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px; }
+        .ach-rarity {
+            display: inline-block; font-size: 0.68rem; font-weight: 700;
+            padding: 2px 6px; border-radius: 4px; margin-top: 6px;
+            color: var(--rarity-color, #fff); border: 1px solid currentColor;
+        }
+        .ach-progress { font-size: 0.75rem; color: var(--hub-brand-color); margin-top: 4px; font-weight: 600; }
+    </style>
+</head>
+<body>
+<main id="main-content">
+    <div class="ach-page">
+        <div id="ach-content">Cargando logros...</div>
+    </div>
+</main>
+<script>
+const SECTION_LABELS = {
+    hub:          { es: '🌐 General', en: '🌐 General', eu: '🌐 Orokorrak' },
+    mathMaster:   { es: '🧮 MathMaster', en: '🧮 MathMaster', eu: '🧮 MathMaster' },
+    snake:        { es: '🐍 Snake', en: '🐍 Snake', eu: '🐍 Snake' },
+    tableMaster:  { es: '✖ TableMaster', en: '✖ TableMaster', eu: '✖ TableMaster' },
+    typingMaster: { es: '⌨️ TypeMaster', en: '⌨️ TypeMaster', eu: '⌨️ TypeMaster' },
+    wordSearch:   { es: '🔍 WordSearch', en: '🔍 WordSearch', eu: '🔍 WordSearch'  },
+    crossword:    { es: '✏️ Crucigrama', en: '✏️ Crossword',  eu: '✏️ Gurutzegrama'},
+    geoQuiz:      { es: '🗺️ GeoQuiz',   en: '🗺️ GeoQuiz',   eu: '🗺️ GeoQuiz'    },
+};
+
+function getLang() {
+    const l = PlatformI18n?.currentLanguage || localStorage.getItem('games_hub_language') || 'es-ES';
+    return l.startsWith('en') ? 'en' : l.startsWith('eu') ? 'eu' : 'es';
+}
+
+async function renderAchievements(unlockedIds) {
+    const lang = getLang();
+    const sections = ['hub', 'mathMaster', 'snake', 'tableMaster', 'typingMaster', 'wordSearch', 'crossword', 'geoQuiz'];
+    let html = '';
+
+    for (const section of sections) {
+        const defs = PlatformAchievements.DEFINITIONS.filter(a => a.game === section);
+        const label = SECTION_LABELS[section][lang];
+        const count = defs.filter(d => unlockedIds.includes(d.id)).length;
+
+        html += `<div class="ach-section">
+            <div class="ach-section-title">${label} (${count}/${defs.length})</div>
+            <div class="ach-grid">`;
+
+        for (const def of defs) {
+            const unlocked = unlockedIds.includes(def.id);
+            const localized = PlatformAchievements.getLocalized(def, PlatformI18n?.currentLanguage || 'es-ES');
+            const rarityColor = PlatformAchievements.RARITY_COLOR[def.rarity];
+            const rarityName = PlatformAchievements.RARITY_NAME[def.rarity]?.[lang] || def.rarity;
+            html += `
+                <div class="ach-card ${unlocked ? 'unlocked' : 'locked'}" style="--rarity-color:${rarityColor}">
+                    <div class="ach-icon">${unlocked ? def.icon : '🔒'}</div>
+                    <div class="ach-info">
+                        <div class="ach-name">${localized.name}</div>
+                        <div class="ach-desc">${localized.desc}</div>
+                        <div class="ach-rarity" style="color:${rarityColor};border-color:${rarityColor}">${rarityName}</div>
+                        ${unlocked ? `<div class="ach-progress">✓ ${lang === 'en' ? 'Unlocked' : lang === 'eu' ? 'Desblokeatuta' : 'Desbloqueado'}</div>` : ''}
+                    </div>
+                </div>`;
+        }
+        html += '</div></div>';
+    }
+    document.getElementById('ach-content').innerHTML = html;
+}
+
+let _currentUnlocked = [];
+
+async function init() {
+    PlatformHeader.init({ gameName: 'Logros', gameIcon: '🏆', rootPath: '../' });
+
+    if (typeof PlatformAuth !== 'undefined') {
+        PlatformAuth.onAuthStateChanged(async user => {
+            if (user && typeof PlatformFirestore !== 'undefined') {
+                // Load achievements from all games
+                const gameIds = ['mathMaster', 'snake', 'tableMaster', 'typingMaster', 'wordSearch', 'crossword', 'geoQuiz'];
+                const allAchievements = new Set();
+                for (const gid of gameIds) {
+                    const data = await PlatformFirestore.getAchievements(user.uid, gid).catch(() => ({ unlockedAchievements: [] }));
+                    (data.unlockedAchievements || []).forEach(id => allAchievements.add(id));
+                }
+                // Also check hub achievements from user profile
+                const profile = await PlatformFirestore.getOrCreateProfile(user.uid, user).catch(() => null);
+                if (profile?.unlockedAchievements) {
+                    profile.unlockedAchievements.forEach(id => allAchievements.add(id));
+                }
+                _currentUnlocked = [...allAchievements];
+            } else {
+                _currentUnlocked = [];
+            }
+            renderAchievements(_currentUnlocked);
+        });
+    } else {
+        renderAchievements([]);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('platformLanguageChanged', () => {
+    renderAchievements(_currentUnlocked);
+});
+</script>
+</body>
+</html>

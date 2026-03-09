@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Irregular Verbs">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <meta name="description" content="Irregular Verbs — Learn the most common English irregular verbs in 3 levels.">
+    <title>Irregular Verbs — Games Hub</title>
+    <link rel="stylesheet" href="../platform/platform.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="platform-header"></div>
+
+<main id="main-content" tabindex="-1">
+
+<!-- ══ SCREEN 1: HOME ═══════════════════════════════════════ -->
+<section id="ev-screen-home" class="ev-screen active" aria-label="Home">
+    <div class="ev-page">
+
+        <div class="ev-home-header">
+            <h1>🇬🇧 Irregular <span>Verbs</span></h1>
+            <p>Aprende los verbos irregulares del inglés</p>
+        </div>
+
+        <!-- Tab bar -->
+        <div class="ev-tabs" role="tablist" aria-label="Secciones">
+            <button class="ev-tab-btn active" id="ev-tabBtn-tabla"
+                role="tab" aria-selected="true" aria-controls="ev-tab-tabla">
+                📋 Tabla
+            </button>
+            <button class="ev-tab-btn" id="ev-tabBtn-grupos"
+                role="tab" aria-selected="false" aria-controls="ev-tab-grupos">
+                🔗 Por grupos
+            </button>
+            <button class="ev-tab-btn" id="ev-tabBtn-niveles"
+                role="tab" aria-selected="false" aria-controls="ev-tab-niveles">
+                🎯 Niveles
+            </button>
+        </div>
+
+        <!-- TAB 1: Tabla -->
+        <div class="ev-tab-content active" id="ev-tab-tabla" role="tabpanel" aria-labelledby="ev-tabBtn-tabla">
+
+            <!-- Search -->
+            <div class="ev-search-wrap">
+                <span class="ev-search-icon" aria-hidden="true">🔍</span>
+                <input
+                    class="ev-search-input"
+                    id="ev-verb-search"
+                    type="search"
+                    placeholder="Buscar verbo..."
+                    aria-label="Buscar en la tabla de verbos"
+                    autocomplete="off">
+            </div>
+
+            <!-- Verb reference table (collapsible) -->
+            <div class="ev-panel" id="ev-table-panel">
+                <button class="ev-panel-toggle" id="ev-table-toggle" aria-expanded="false" aria-controls="ev-table-body">
+                    📋 Tabla de referencia (<span id="ev-verb-count">70</span> verbos) <span class="ev-toggle-icon">▼</span>
+                </button>
+                <div class="ev-panel-body" id="ev-table-body" hidden>
+                    <div id="ev-verb-table-container"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 2: Por grupos -->
+        <div class="ev-tab-content" id="ev-tab-grupos" role="tabpanel" aria-labelledby="ev-tabBtn-grupos">
+            <div id="ev-group-cards-container"></div>
+        </div>
+
+        <!-- TAB 3: Niveles -->
+        <div class="ev-tab-content" id="ev-tab-niveles" role="tabpanel" aria-labelledby="ev-tabBtn-niveles">
+            <p class="ev-section-label">Choose your level</p>
+            <div class="ev-level-grid" id="ev-level-grid" role="list"></div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ══ SCREEN 2: GAME ═══════════════════════════════════════ -->
+<section id="ev-screen-game" class="ev-screen" aria-label="Game" aria-live="polite">
+    <div class="ev-page">
+
+        <!-- HUD -->
+        <div class="ev-hud">
+            <div class="ev-stat">
+                <div class="ev-stat-val" id="ev-score-val">0</div>
+                <div class="ev-stat-lbl">Score</div>
+            </div>
+            <div class="ev-stat">
+                <div class="ev-stat-val" id="ev-progress-val">1/10</div>
+                <div class="ev-stat-lbl">Progress</div>
+            </div>
+            <div class="ev-stat">
+                <div class="ev-stat-val" id="ev-streak-val">0</div>
+                <div class="ev-stat-lbl">Streak</div>
+            </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="ev-progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="ev-progress-bar-wrap">
+            <div class="ev-progress-fill" id="ev-progress-fill" style="width:0%"></div>
+        </div>
+
+        <!-- Level badge -->
+        <p class="ev-level-badge" id="ev-level-badge">Level 1 — Matching</p>
+
+        <!-- Dynamic question area — rendered by JS -->
+        <div id="ev-question-area"></div>
+
+        <!-- Feedback -->
+        <div class="ev-feedback" id="ev-feedback" role="alert" aria-live="assertive" style="display:none"></div>
+
+        <!-- Action row -->
+        <div class="ev-action-row">
+            <button class="ev-btn ev-btn-primary hidden" id="ev-next-btn">Next →</button>
+            <button class="ev-btn ev-btn-ghost" id="ev-quit-btn">Quit</button>
+        </div>
+
+    </div>
+</section>
+
+<!-- ══ SCREEN 3: RESULTS ════════════════════════════════════ -->
+<section id="ev-screen-results" class="ev-screen" aria-label="Results">
+    <div class="ev-page">
+
+        <div class="ev-result-card">
+            <h2 id="ev-result-title">Results!</h2>
+            <div class="ev-result-stars" id="ev-result-stars">⭐⭐⭐</div>
+            <div class="ev-result-big" id="ev-result-score">0</div>
+            <div class="ev-result-big-lbl">points</div>
+            <div class="ev-result-grid">
+                <div class="ev-result-item">
+                    <div class="ev-result-item-val" id="ev-result-correct">0/0</div>
+                    <div class="ev-result-item-lbl">Correct</div>
+                </div>
+                <div class="ev-result-item">
+                    <div class="ev-result-item-val" id="ev-result-time">0:00</div>
+                    <div class="ev-result-item-lbl">Time</div>
+                </div>
+                <div class="ev-result-item">
+                    <div class="ev-result-item-val" id="ev-result-level">1</div>
+                    <div class="ev-result-item-lbl">Level</div>
+                </div>
+            </div>
+            <div class="ev-result-btns">
+                <button class="ev-btn ev-btn-secondary" id="ev-retry-btn">Try again</button>
+                <button class="ev-btn ev-btn-primary" id="ev-next-level-btn">Next level</button>
+                <button class="ev-btn ev-btn-ghost" id="ev-menu-btn">Menu</button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+</main>
+
+<!-- ══ Quit confirmation modal ═══════════════════════════════ -->
+<div id="ev-quit-modal" class="ev-modal hidden" role="dialog" aria-modal="true" tabindex="-1">
+    <div class="ev-modal-dialog">
+        <h3>Quit the exercise?</h3>
+        <p>Your current progress will be lost.</p>
+        <div class="ev-modal-actions">
+            <button class="ev-btn ev-btn-secondary" id="ev-quit-cancel">Cancel</button>
+            <button class="ev-btn ev-btn-primary" id="ev-quit-ok">Quit</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══ Scripts ══════════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
+<script src="../platform/firebase-config.js"></script>
+<script src="../platform/i18n-platform.js"></script>
+<script src="../platform/auth.js"></script>
+<script src="../platform/firestore.js"></script>
+<script src="../platform/achievements.js"></script>
+<script src="../platform/platform-header.js"></script>
+<script src="data.js"></script>
+<script src="game.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    PlatformHeader.init({ gameName: 'Irregular Verbs', gameIcon: '🇬🇧', rootPath: '../' });
+    EnglishVerbsGame.init();
+    // Update verb count badge
+    const countEl = document.getElementById('ev-verb-count');
+    if (countEl && typeof IRREGULAR_VERBS !== 'undefined') {
+        countEl.textContent = IRREGULAR_VERBS.length;
+    }
+});
+</script>
+    <script src="../platform/register-sw.js"></script>
+</body>
+</html>

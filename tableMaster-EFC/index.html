@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="es" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TableMaster">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <meta name="description" content="TableMaster – Herramienta educativa de multiplicación y división para niños.">
+    <title>TableMaster – Games Hub</title>
+
+    <!-- Platform design system -->
+    <link rel="stylesheet" href="../platform/platform.css">
+    <!-- Game-specific styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@400;500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- Platform header injected by JS -->
+
+<main id="main-content" class="tm-main">
+
+    <!-- ===== PANTALLA INICIO ===== -->
+    <section id="screen-home" class="tm-screen active" aria-label="Inicio" role="main">
+        <div class="tm-container tm-home-container">
+            <header class="tm-hero">
+                <div class="tm-hero-icon" aria-hidden="true">✖</div>
+                <h1 class="tm-title" data-i18n="gameTitle">TableMaster</h1>
+                <p class="tm-subtitle" data-i18n="gameSubtitle">Aprende y practica la multiplicación y la división</p>
+            </header>
+
+            <div class="tm-mode-grid">
+                <button class="tm-mode-card tm-mode-learn" id="btn-learn-multiply" data-action="learn" data-op="multiply">
+                    <div class="tm-mode-icon" aria-hidden="true">📖</div>
+                    <div class="tm-mode-title" data-i18n="learnMultiply">Aprender a multiplicar</div>
+                    <div class="tm-mode-desc" data-i18n="learnMultiplyDesc">Conceptos, método paso a paso y trucos</div>
+                </button>
+                <button class="tm-mode-card tm-mode-learn" id="btn-learn-divide" data-action="learn" data-op="divide">
+                    <div class="tm-mode-icon" aria-hidden="true">📖</div>
+                    <div class="tm-mode-title" data-i18n="learnDivide">Aprender a dividir</div>
+                    <div class="tm-mode-desc" data-i18n="learnDivideDesc">Conceptos, método de la caja y trucos</div>
+                </button>
+                <button class="tm-mode-card tm-mode-practice" id="btn-practice-multiply" data-action="practice" data-op="multiply">
+                    <div class="tm-mode-icon" aria-hidden="true">✏️</div>
+                    <div class="tm-mode-title" data-i18n="practiceMultiply">Practicar multiplicación</div>
+                    <div class="tm-mode-desc" data-i18n="practiceMultiplyDesc">Ejercicios paso a paso con el método escrito</div>
+                </button>
+                <button class="tm-mode-card tm-mode-practice" id="btn-practice-divide" data-action="practice" data-op="divide">
+                    <div class="tm-mode-icon" aria-hidden="true">✏️</div>
+                    <div class="tm-mode-title" data-i18n="practiceDivide">Practicar división</div>
+                    <div class="tm-mode-desc" data-i18n="practiceDivideDesc">Ejercicios paso a paso con la caja española</div>
+                </button>
+                <button class="tm-mode-card tm-mode-table" id="btn-full-table" data-action="table" style="grid-column: 1 / -1;">
+                    <div class="tm-mode-icon" aria-hidden="true">📋</div>
+                    <div class="tm-mode-title" data-i18n="fullTableTitle">Tablas completas</div>
+                    <div class="tm-mode-desc" data-i18n="fullTableDesc">Cuadrícula interactiva 10×10 con todas las multiplicaciones</div>
+                </button>
+            </div>
+
+            <p class="tm-guest-notice hidden" id="guest-notice" data-i18n="notSaved" aria-live="polite"></p>
+        </div>
+    </section>
+
+    <!-- ===== PANTALLA APRENDER MULTIPLICACIÓN ===== -->
+    <section id="screen-learn-multiply" class="tm-screen" aria-label="Aprender multiplicación" role="main">
+        <div class="tm-container tm-learn-container">
+
+            <div class="tm-learn-header">
+                <button class="tm-back-btn" data-back="screen-home" aria-label="Volver al inicio">← <span data-i18n="back">Volver</span></button>
+                <h2 class="tm-learn-title" data-i18n="learnMultiply">Aprender a multiplicar</h2>
+            </div>
+
+            <!-- Índice de fichas -->
+            <div class="tm-slide-nav" role="tablist" aria-label="Fichas de aprendizaje">
+                <button class="tm-slide-tab active" data-slide="0" role="tab" aria-selected="true">1</button>
+                <button class="tm-slide-tab" data-slide="1" role="tab" aria-selected="false">2</button>
+                <button class="tm-slide-tab" data-slide="2" role="tab" aria-selected="false">3</button>
+                <button class="tm-slide-tab" data-slide="3" role="tab" aria-selected="false">4</button>
+                <button class="tm-slide-tab" data-slide="4" role="tab" aria-selected="false">5</button>
+                <button class="tm-slide-tab" data-slide="5" role="tab" aria-selected="false">6</button>
+            </div>
+
+            <!-- Ficha 1: ¿Qué es multiplicar? -->
+            <div class="tm-slide active" id="lm-slide-0" role="tabpanel">
+                <div class="tm-theory-card">
+                    <div class="tm-theory-badge">¿Qué es?</div>
+                    <h3 class="tm-theory-title">¿Qué es multiplicar?</h3>
+                    <p class="tm-theory-text">Multiplicar es <strong>sumar un número varias veces</strong>.</p>
+
+                    <div class="tm-visual-eq">
+                        <div class="tm-eq-row">
+                            <span class="tm-eq-num">4</span>
+                            <span class="tm-eq-op">×</span>
+                            <span class="tm-eq-num">3</span>
+                            <span class="tm-eq-op">=</span>
+                            <span class="tm-eq-num tm-eq-expand">4 + 4 + 4</span>
+                            <span class="tm-eq-op">=</span>
+                            <span class="tm-eq-num tm-eq-result">12</span>
+                        </div>
+                    </div>
+
+                    <div class="tm-apple-grid" aria-label="Visualización: 3 filas de 4 manzanas">
+                        <div class="tm-apple-row">
+                            <span class="tm-apple" title="fila 1">🍎</span>
+                            <span class="tm-apple">🍎</span>
+                            <span class="tm-apple">🍎</span>
+                            <span class="tm-apple">🍎</span>
+                            <span class="tm-apple-label">← fila 1</span>
+                        </div>
+                        <div class="tm-apple-row">
+                            <span class="tm-apple">🍎</span>
+                            <span class="tm-apple">🍎</span>
+                            <span class="tm-apple">🍎</span>
+                            <span class="tm-apple">🍎</span>
+                            <span class="tm-apple-label">← fila 2</span>
+                        </div>
+                        <div class="tm-apple-row">
+                            <span class="tm-apple">🍎</span>
+                            <span class="tm-apple">🍎</span>
+                            <span class="tm-apple">🍎</span>
+                            <span class="tm-apple">🍎</span>
+                            <span class="tm-apple-label">← fila 3</span>
+                        </div>
+                        <div class="tm-apple-total">3 filas × 4 manzanas = 12 manzanas en total</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ficha 2: Partes de una multiplicación -->
+            <div class="tm-slide" id="lm-slide-1" role="tabpanel" hidden>
+                <div class="tm-theory-card">
+                    <div class="tm-theory-badge">Partes</div>
+                    <h3 class="tm-theory-title">Partes de una multiplicación</h3>
+
+                    <div class="tm-operation-diagram tm-mult-diagram">
+                        <div class="tm-op-line">
+                            <span class="tm-digit-block">2</span>
+                            <span class="tm-digit-block">4</span>
+                            <span class="tm-term-arrow tm-arrow-right" id="arr-multiplicando">multiplicando</span>
+                        </div>
+                        <div class="tm-op-line">
+                            <span class="tm-digit-op">×</span>
+                            <span class="tm-digit-block tm-digit-indent">6</span>
+                            <span class="tm-term-arrow tm-arrow-right" id="arr-multiplicador">multiplicador</span>
+                        </div>
+                        <div class="tm-op-separator"></div>
+                        <div class="tm-op-line">
+                            <span class="tm-digit-block tm-digit-result">1</span>
+                            <span class="tm-digit-block tm-digit-result">4</span>
+                            <span class="tm-digit-block tm-digit-result">4</span>
+                            <span class="tm-term-arrow tm-arrow-right" id="arr-producto">producto</span>
+                        </div>
+                    </div>
+
+                    <div class="tm-term-cards">
+                        <div class="tm-term-card" tabindex="0" aria-label="Multiplicando: el número que se repite">
+                            <div class="tm-term-name">Multiplicando</div>
+                            <div class="tm-term-def">El número que se repite (el que está arriba)</div>
+                        </div>
+                        <div class="tm-term-card" tabindex="0" aria-label="Multiplicador: cuántas veces se repite">
+                            <div class="tm-term-name">Multiplicador</div>
+                            <div class="tm-term-def">Cuántas veces repetimos el multiplicando</div>
+                        </div>
+                        <div class="tm-term-card" tabindex="0" aria-label="Producto: el resultado">
+                            <div class="tm-term-name">Producto</div>
+                            <div class="tm-term-def">El resultado de la multiplicación</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ficha 3: Propiedades -->
+            <div class="tm-slide" id="lm-slide-2" role="tabpanel" hidden>
+                <div class="tm-theory-card">
+                    <div class="tm-theory-badge">Propiedades</div>
+                    <h3 class="tm-theory-title">Propiedades de la multiplicación</h3>
+
+                    <div class="tm-properties-list">
+                        <div class="tm-property">
+                            <div class="tm-prop-name">Conmutativa</div>
+                            <div class="tm-prop-body">
+                                <div class="tm-prop-eq">
+                                    <span class="tm-prop-hl-a">4</span> × <span class="tm-prop-hl-b">3</span>
+                                    = <span class="tm-prop-hl-b">3</span> × <span class="tm-prop-hl-a">4</span>
+                                    = 12
+                                </div>
+                                <div class="tm-prop-note">El orden de los factores no cambia el producto</div>
+                            </div>
+                        </div>
+                        <div class="tm-property">
+                            <div class="tm-prop-name">Elemento neutro</div>
+                            <div class="tm-prop-body">
+                                <div class="tm-prop-eq">7 × <span class="tm-prop-special">1</span> = 7</div>
+                                <div class="tm-prop-note">Cualquier número × 1 = ese mismo número</div>
+                            </div>
+                        </div>
+                        <div class="tm-property">
+                            <div class="tm-prop-name">Elemento absorbente</div>
+                            <div class="tm-prop-body">
+                                <div class="tm-prop-eq">9 × <span class="tm-prop-zero">0</span> = 0</div>
+                                <div class="tm-prop-note">Cualquier número × 0 = 0</div>
+                            </div>
+                        </div>
+                        <div class="tm-property">
+                            <div class="tm-prop-name">Asociativa</div>
+                            <div class="tm-prop-body">
+                                <div class="tm-prop-eq">
+                                    <span class="tm-prop-paren">(2×3)</span>×4
+                                    = 2×<span class="tm-prop-paren">(3×4)</span>
+                                    = 24
+                                </div>
+                                <div class="tm-prop-note">Podemos agrupar los factores como queramos</div>
+                            </div>
+                        </div>
+                        <div class="tm-property">
+                            <div class="tm-prop-name">Distributiva</div>
+                            <div class="tm-prop-body">
+                                <div class="tm-prop-eq">
+                                    6×<span class="tm-prop-paren">(3+2)</span>
+                                    = <span class="tm-prop-hl-a">6×3</span> + <span class="tm-prop-hl-b">6×2</span>
+                                    = 18+12 = 30
+                                </div>
+                                <div class="tm-prop-note">Se puede distribuir la multiplicación sobre la suma</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ficha 4: El método -->
+            <div class="tm-slide" id="lm-slide-3" role="tabpanel" hidden>
+                <div class="tm-theory-card">
+                    <div class="tm-theory-badge">Método</div>
+                    <h3 class="tm-theory-title">✏️ Cómo se multiplica paso a paso</h3>
+
+                    <div class="tm-demo-container" id="mult-demo">
+                        <!-- Se rellena por JS -->
+                    </div>
+
+                    <button class="tm-demo-btn" id="btn-mult-example">Ver otro ejemplo</button>
+
+                    <!-- Box: ¿Qué es llevar? -->
+                    <div class="tm-carry-explain-box">
+                        <div class="tm-carry-explain-title">💡 ¿Qué es llevar?</div>
+                        <p class="tm-carry-explain-text">
+                            Cuando el resultado parcial tiene <strong>2 cifras</strong>, el primer dígito
+                            <span class="tm-carry-highlight">"se lleva"</span> a la siguiente columna y
+                            <strong>se suma</strong> al siguiente producto.
+                        </p>
+                        <div class="tm-carry-explain-example">
+                            <div class="tm-carry-ex-title">Ejemplo con llevada grande: <code>89 × 7</code></div>
+                            <pre class="tm-carry-pre">
+    8 9
+  ×   7
+  -----
+  6 2 3</pre>
+                            <div class="tm-carry-steps">
+                                <div class="tm-carry-step">
+                                    <span class="tm-carry-step-n">1</span>
+                                    7 × 9 = 63 → escribo <strong>3</strong>, me llevo <span class="tm-carry-hl">6</span>
+                                </div>
+                                <div class="tm-carry-step">
+                                    <span class="tm-carry-step-n">2</span>
+                                    7 × 8 = 56 + <span class="tm-carry-hl">6 llevados</span> = 62 → escribo <strong>62</strong>
+                                </div>
+                                <div class="tm-carry-step">
+                                    <span class="tm-carry-step-n">R</span>
+                                    Resultado: <strong>623</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Multiplicación por 2 cifras -->
+                    <div class="tm-mult-partial-box">
+                        <div class="tm-carry-explain-title">📐 Multiplicación por 2 cifras: <code>34 × 12</code></div>
+                        <p class="tm-carry-explain-text">
+                            Se calculan <strong>dos productos parciales</strong> y luego se suman.
+                            Al multiplicar por las <em>decenas</em>, desplazamos un lugar a la izquierda.
+                        </p>
+                        <div class="tm-mult-partial">
+                            <div class="tm-mp-header">
+                                <div class="tm-mp-line">
+                                    <span class="tm-mp-space"></span>
+                                    <span class="tm-mp-num">3 4</span>
+                                </div>
+                                <div class="tm-mp-line">
+                                    <span class="tm-mp-op">×</span>
+                                    <span class="tm-mp-num">1 2</span>
+                                </div>
+                                <div class="tm-mp-separator"></div>
+                                <div class="tm-mp-line tm-mp-partial1">
+                                    <span class="tm-mp-label">← 34 × 2 (unidades)</span>
+                                    <span class="tm-mp-num">6 8</span>
+                                </div>
+                                <div class="tm-mp-line tm-mp-partial2">
+                                    <span class="tm-mp-label">← 34 × 10 (desplazado)</span>
+                                    <span class="tm-mp-num">3 4 0</span>
+                                </div>
+                                <div class="tm-mp-separator"></div>
+                                <div class="tm-mp-line tm-mp-total">
+                                    <span class="tm-mp-label">← suma de los dos</span>
+                                    <span class="tm-mp-num">4 0 8</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tm-carry-steps">
+                            <div class="tm-carry-step">
+                                <span class="tm-carry-step-n">1</span>
+                                34 × 2 = <strong>68</strong> (primer producto parcial)
+                            </div>
+                            <div class="tm-carry-step">
+                                <span class="tm-carry-step-n">2</span>
+                                34 × 10 = <strong>340</strong> (segundo parcial, desplazado una posición)
+                            </div>
+                            <div class="tm-carry-step">
+                                <span class="tm-carry-step-n">+</span>
+                                68 + 340 = <strong>408</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ficha 5: Trucos rápidos -->
+            <div class="tm-slide" id="lm-slide-4" role="tabpanel" hidden>
+                <div class="tm-theory-card">
+                    <div class="tm-theory-badge">Trucos</div>
+                    <h3 class="tm-theory-title">⚡ Trucos para multiplicar</h3>
+
+                    <div class="tm-tricks-list">
+                        <div class="tm-trick">
+                            <div class="tm-trick-rule">× 10</div>
+                            <div class="tm-trick-body">
+                                <div class="tm-trick-eq">35 × 10 = <strong>350</strong></div>
+                                <div class="tm-trick-tip">Añadir un <strong>0</strong> al final</div>
+                            </div>
+                        </div>
+                        <div class="tm-trick">
+                            <div class="tm-trick-rule">× 5</div>
+                            <div class="tm-trick-body">
+                                <div class="tm-trick-eq">24 × 5 = 24÷2 × 10 = <strong>120</strong></div>
+                                <div class="tm-trick-tip">Dividir entre 2 y multiplicar por 10</div>
+                            </div>
+                        </div>
+                        <div class="tm-trick">
+                            <div class="tm-trick-rule">× 2</div>
+                            <div class="tm-trick-body">
+                                <div class="tm-trick-eq">13 × 2 = <strong>26</strong></div>
+                                <div class="tm-trick-tip">Es lo mismo que <strong>duplicar</strong> el número</div>
+                            </div>
+                        </div>
+                        <div class="tm-trick">
+                            <div class="tm-trick-rule">× 11</div>
+                            <div class="tm-trick-body">
+                                <div class="tm-trick-eq">5 × 11 = <strong>55</strong> &nbsp; 8 × 11 = <strong>88</strong></div>
+                                <div class="tm-trick-tip">Para dígitos 1-9: repetir el dígito dos veces</div>
+                            </div>
+                        </div>
+                        <div class="tm-trick">
+                            <div class="tm-trick-rule">× 9</div>
+                            <div class="tm-trick-body">
+                                <div class="tm-trick-eq">6 × 9 = (6×10)−6 = <strong>54</strong></div>
+                                <div class="tm-trick-tip">Multiplicar por 10 y restar el número</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ficha 6: Trucos para recordar tablas -->
+            <div class="tm-slide" id="lm-slide-5" role="tabpanel" hidden>
+                <div class="tm-theory-card">
+                    <div class="tm-theory-badge">Memoria</div>
+                    <h3 class="tm-theory-title">🧠 Trucos para recordar las tablas</h3>
+
+                    <div class="tm-trick-cards-grid">
+
+                        <div class="trick-card trick-card--blue">
+                            <div class="trick-card__icon">2️⃣</div>
+                            <div class="trick-card__title">Tabla del 2</div>
+                            <div class="trick-card__body">
+                                Siempre es el número <strong>sumado consigo mismo</strong>.
+                                <div class="trick-card__eq">6 × 2 = 6 + 6 = <strong>12</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="trick-card trick-card--green">
+                            <div class="trick-card__icon">5️⃣</div>
+                            <div class="trick-card__title">Tabla del 5</div>
+                            <div class="trick-card__body">
+                                Siempre termina en <strong>0 o 5</strong>. Cuenta de 5 en 5.
+                                <div class="trick-card__eq">5, 10, 15, 20, 25, 30...</div>
+                            </div>
+                        </div>
+
+                        <div class="trick-card trick-card--orange">
+                            <div class="trick-card__icon">🤚</div>
+                            <div class="trick-card__title">Tabla del 9 — dedos</div>
+                            <div class="trick-card__body">
+                                <p>Numera los dedos del 1 al 10. Para <strong>9 × 3</strong>: baja el dedo 3.</p>
+                                <div class="trick-card__fingers" aria-label="Truco dedos tabla del 9">
+                                    <span class="tf-finger tf-up">1</span>
+                                    <span class="tf-finger tf-up">2</span>
+                                    <span class="tf-finger tf-down">3</span>
+                                    <span class="tf-finger tf-up">4</span>
+                                    <span class="tf-finger tf-up">5</span>
+                                    <span class="tf-sep">|</span>
+                                    <span class="tf-finger tf-up">6</span>
+                                    <span class="tf-finger tf-up">7</span>
+                                    <span class="tf-finger tf-up">8</span>
+                                    <span class="tf-finger tf-up">9</span>
+                                    <span class="tf-finger tf-up">10</span>
+                                </div>
+                                <div class="trick-card__finger-legend">
+                                    <span class="tf-left-count">2 a la izquierda</span>
+                                    <span class="tf-right-count">7 a la derecha</span>
+                                </div>
+                                <div class="trick-card__eq">9 × 3 = <strong>27</strong></div>
+                                <p style="margin-top:8px; font-size:0.82rem; color:var(--text-muted)">
+                                    Truco extra: los dígitos del resultado suman siempre 9.<br>
+                                    9×2=18 → 1+8=9 &nbsp; 9×4=36 → 3+6=9
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="trick-card trick-card--purple">
+                            <div class="trick-card__icon">1️⃣1️⃣</div>
+                            <div class="trick-card__title">Tabla del 11 (hasta ×9)</div>
+                            <div class="trick-card__body">
+                                Repite el dígito dos veces.
+                                <div class="trick-card__eq">11 × 7 = <strong>77</strong> &nbsp; 11 × 4 = <strong>44</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="trick-card trick-card--teal">
+                            <div class="trick-card__icon">4️⃣</div>
+                            <div class="trick-card__title">Tabla del 4</div>
+                            <div class="trick-card__body">
+                                Es la tabla del 2 multiplicada por 2.
+                                <div class="trick-card__eq">4 × 6 = (2×6)×2 = 12×2 = <strong>24</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="trick-card trick-card--gray">
+                            <div class="trick-card__icon">🔄</div>
+                            <div class="trick-card__title">Propiedad conmutativa</div>
+                            <div class="trick-card__body">
+                                Si no sabes una, úsala al revés. Aprende la más fácil.
+                                <div class="trick-card__eq">7 × 8 = 8 × 7 = <strong>56</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="trick-card trick-card--red trick-card--wide">
+                            <div class="trick-card__icon">⚠️</div>
+                            <div class="trick-card__title">Los 6 más difíciles — memorízalos</div>
+                            <div class="trick-card__body">
+                                <div class="trick-card__hard-grid">
+                                    <span class="hard-fact">6×6 = <strong>36</strong></span>
+                                    <span class="hard-fact">6×7 = <strong>42</strong></span>
+                                    <span class="hard-fact">6×8 = <strong>48</strong></span>
+                                    <span class="hard-fact">7×7 = <strong>49</strong></span>
+                                    <span class="hard-fact">7×8 = <strong>56</strong></span>
+                                    <span class="hard-fact">8×8 = <strong>64</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navegación entre fichas -->
+            <div class="tm-slide-controls">
+                <button class="tm-slide-prev" id="lm-prev" aria-label="Ficha anterior" disabled>← Anterior</button>
+                <span class="tm-slide-counter" id="lm-counter">1 / 6</span>
+                <button class="tm-slide-next" id="lm-next" aria-label="Ficha siguiente">Siguiente →</button>
+            </div>
+
+            <button class="tm-start-practice-btn" id="btn-start-practice-multiply" data-i18n="startPractice">
+                Empezar a practicar
+            </button>
+        </div>
+    </section>
+
+    <!-- ===== PANTALLA APRENDER DIVISIÓN ===== -->
+    <section id="screen-learn-divide" class="tm-screen" aria-label="Aprender división" role="main">
+        <div class="tm-container tm-learn-container">
+
+            <div class="tm-learn-header">
+                <button class="tm-back-btn" data-back="screen-home" aria-label="Volver al inicio">← <span data-i18n="back">Volver</span></button>
+                <h2 class="tm-learn-title" data-i18n="learnDivide">Aprender a dividir</h2>
+            </div>
+
+            <div class="tm-slide-nav" role="tablist" aria-label="Fichas de aprendizaje">
+                <button class="tm-slide-tab active" data-slide="0" role="tab" aria-selected="true">1</button>
+                <button class="tm-slide-tab" data-slide="1" role="tab" aria-selected="false">2</button>
+                <button class="tm-slide-tab" data-slide="2" role="tab" aria-selected="false">3</button>
+                <button class="tm-slide-tab" data-slide="3" role="tab" aria-selected="false">4</button>
+                <button class="tm-slide-tab" data-slide="4" role="tab" aria-selected="false">5</button>
+            </div>
+
+            <!-- Ficha 1: ¿Qué es dividir? -->
+            <div class="tm-slide active" id="ld-slide-0" role="tabpanel">
+                <div class="tm-theory-card">
+                    <div class="tm-theory-badge">¿Qué es?</div>
+                    <h3 class="tm-theory-title">¿Qué es dividir?</h3>
+                    <p class="tm-theory-text">Dividir es <strong>repartir en partes iguales</strong>.</p>
+
+                    <div class="tm-divide-visual" aria-label="12 manzanas repartidas entre 3 niños">
+                        <div class="tm-divide-total">
+                            <div class="tm-apples-row">
+                                <span class="tm-apple">🍎</span><span class="tm-apple">🍎</span><span class="tm-apple">🍎</span><span class="tm-apple">🍎</span>
+                                <span class="tm-apple">🍎</span><span class="tm-apple">🍎</span><span class="tm-apple">🍎</span><span class="tm-apple">🍎</span>
+                                <span class="tm-apple">🍎</span><span class="tm-apple">🍎</span><span class="tm-apple">🍎</span><span class="tm-apple">🍎</span>
+                            </div>
+                            <div class="tm-divide-label">12 manzanas en total</div>
+                        </div>
+                        <div class="tm-divide-arrow" aria-hidden="true">÷ 3 niños</div>
+                        <div class="tm-divide-parts">
+                            <div class="tm-divide-part">
+                                <span class="tm-apple">🍎</span><span class="tm-apple">🍎</span><span class="tm-apple">🍎</span><span class="tm-apple">🍎</span>
+                                <div class="tm-part-label">Niño 1: 4</div>
+                            </div>
+                            <div class="tm-divide-part">
+                                <span class="tm-apple">🍎</span><span class="tm-apple">🍎</span><span class="tm-apple">🍎</span><span class="tm-apple">🍎</span>
+                                <div class="tm-part-label">Niño 2: 4</div>
+                            </div>
+                            <div class="tm-divide-part">
+                                <span class="tm-apple">🍎</span><span class="tm-apple">🍎</span><span class="tm-apple">🍎</span><span class="tm-apple">🍎</span>
+                                <div class="tm-part-label">Niño 3: 4</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tm-visual-eq">
+                        <div class="tm-eq-row">
+                            <span class="tm-eq-num">12</span>
+                            <span class="tm-eq-op">÷</span>
+                            <span class="tm-eq-num">3</span>
+                            <span class="tm-eq-op">=</span>
+                            <span class="tm-eq-num tm-eq-result">4</span>
+                        </div>
+                        <div class="tm-eq-check">porque 3 × 4 = 12</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ficha 2: Partes de una división -->
+            <div class="tm-slide" id="ld-slide-1" role="tabpanel" hidden>
+                <div class="tm-theory-card">
+                    <div class="tm-theory-badge">Partes</div>
+                    <h3 class="tm-theory-title">Partes de una división</h3>
+
+                    <div class="tm-operation-diagram tm-div-diagram">
+                        <div class="tm-div-box">
+                            <div class="tm-div-left">
+                                <div class="tm-div-dividend">
+                                    <span class="tm-digit-block">2</span>
+                                    <span class="tm-digit-block">3</span>
+                                    <span class="tm-digit-block">8</span>
+                                </div>
+                                <div class="tm-div-under"></div>
+                            </div>
+                            <div class="tm-div-bar"></div>
+                            <div class="tm-div-right">
+                                <div class="tm-div-divisor">
+                                    <span class="tm-digit-block tm-digit-blue">7</span>
+                                </div>
+                                <div class="tm-div-hline"></div>
+                                <div class="tm-div-cociente">
+                                    <span class="tm-digit-block tm-digit-result">3</span>
+                                    <span class="tm-digit-block tm-digit-result">4</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tm-div-labels">
+                            <div class="tm-div-label-item">
+                                <span class="tm-label-dot tm-ld-dividend"></span>
+                                <span>Dividendo (238)</span>
+                            </div>
+                            <div class="tm-div-label-item">
+                                <span class="tm-label-dot tm-ld-divisor"></span>
+                                <span>Divisor (7)</span>
+                            </div>
+                            <div class="tm-div-label-item">
+                                <span class="tm-label-dot tm-ld-cociente"></span>
+                                <span>Cociente (34)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tm-term-cards">
+                        <div class="tm-term-card" tabindex="0">
+                            <div class="tm-term-name">Dividendo</div>
+                            <div class="tm-term-def">El número que vamos a repartir (el grande)</div>
+                        </div>
+                        <div class="tm-term-card" tabindex="0">
+                            <div class="tm-term-name">Divisor</div>
+                            <div class="tm-term-def">Entre cuántas partes repartimos</div>
+                        </div>
+                        <div class="tm-term-card" tabindex="0">
+                            <div class="tm-term-name">Cociente</div>
+                            <div class="tm-term-def">El resultado (cuánto toca a cada parte)</div>
+                        </div>
+                        <div class="tm-term-card" tabindex="0">
+                            <div class="tm-term-name">Resto</div>
+                            <div class="tm-term-def">Lo que sobra si no divide exacto</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ficha 3: El resto -->
+            <div class="tm-slide" id="ld-slide-2" role="tabpanel" hidden>
+                <div class="tm-theory-card">
+                    <div class="tm-theory-badge">El resto</div>
+                    <h3 class="tm-theory-title">¿Qué es el resto?</h3>
+                    <p class="tm-theory-text">El resto es <strong>lo que sobra</strong> cuando no divide exacto.</p>
+
+                    <div class="tm-resto-visual" aria-label="13 palitos divididos entre 4">
+                        <div class="tm-palitos">
+                            <span class="tm-palito tm-palito-group">|</span><span class="tm-palito tm-palito-group">|</span>
+                            <span class="tm-palito tm-palito-group">|</span><span class="tm-palito tm-palito-group">|</span>
+                            <span class="tm-palito-sep"></span>
+                            <span class="tm-palito tm-palito-group">|</span><span class="tm-palito tm-palito-group">|</span>
+                            <span class="tm-palito tm-palito-group">|</span><span class="tm-palito tm-palito-group">|</span>
+                            <span class="tm-palito-sep"></span>
+                            <span class="tm-palito tm-palito-group">|</span><span class="tm-palito tm-palito-group">|</span>
+                            <span class="tm-palito tm-palito-group">|</span><span class="tm-palito tm-palito-group">|</span>
+                            <span class="tm-palito-sep"></span>
+                            <span class="tm-palito tm-palito-resto">|</span>
+                        </div>
+                        <div class="tm-palito-legend">
+                            <span class="tm-dot-group"></span> 3 grupos de 4
+                            &nbsp;&nbsp;
+                            <span class="tm-dot-resto"></span> 1 sobra (resto)
+                        </div>
+                    </div>
+
+                    <div class="tm-visual-eq">
+                        <div class="tm-eq-row">
+                            <span class="tm-eq-num">13</span>
+                            <span class="tm-eq-op">÷</span>
+                            <span class="tm-eq-num">4</span>
+                            <span class="tm-eq-op">=</span>
+                            <span class="tm-eq-num tm-eq-result">3</span>
+                            <span class="tm-eq-op tm-eq-small">(resto</span>
+                            <span class="tm-eq-num tm-eq-resto">1</span>
+                            <span class="tm-eq-op tm-eq-small">)</span>
+                        </div>
+                    </div>
+
+                    <div class="tm-rules-box">
+                        <div class="tm-rule">
+                            <span class="tm-rule-icon">📏</span>
+                            <span><strong>El resto siempre es menor que el divisor.</strong> Si 13 ÷ 4, el resto tiene que ser 0, 1, 2 o 3.</span>
+                        </div>
+                        <div class="tm-rule">
+                            <span class="tm-rule-icon">✓</span>
+                            <span><strong>Comprobación:</strong> divisor × cociente + resto = dividendo → 4×3+1 = 13 ✓</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ficha 4: El método de la caja -->
+            <div class="tm-slide" id="ld-slide-3" role="tabpanel" hidden>
+                <div class="tm-theory-card">
+                    <div class="tm-theory-badge">Método</div>
+                    <h3 class="tm-theory-title">📦 Cómo se divide paso a paso</h3>
+
+                    <div class="tm-demo-container" id="div-demo">
+                        <!-- Se rellena por JS -->
+                    </div>
+
+                    <button class="tm-demo-btn" id="btn-div-example">Ver otro ejemplo</button>
+
+                    <!-- Ejemplo extendido: 546 ÷ 7 -->
+                    <div class="tm-carry-explain-box" style="margin-top:20px;">
+                        <div class="tm-carry-explain-title">📖 Ejemplo completo: <code>546 ÷ 7</code> (3 pasos)</div>
+                        <div class="tm-carry-steps">
+                            <div class="tm-carry-step">
+                                <span class="tm-carry-step-n">1</span>
+                                ¿Cabe 7 en <strong>5</strong>? No. Tomo <strong>54</strong>.
+                                ¿Cuántas veces cabe 7 en 54? → <strong>7 veces</strong> (7×7=49). Resto: 54−49=<strong>5</strong>.
+                            </div>
+                            <div class="tm-carry-step">
+                                <span class="tm-carry-step-n">2</span>
+                                Bajo el 6. Tengo <strong>56</strong>.
+                                ¿Cuántas veces cabe 7 en 56? → <strong>8 veces</strong> (7×8=56). Resto: <strong>0</strong>.
+                            </div>
+                            <div class="tm-carry-step">
+                                <span class="tm-carry-step-n">R</span>
+                                Cociente: <strong>78</strong> &nbsp; Resto: <strong>0</strong> &nbsp;→&nbsp; 546 ÷ 7 = <strong>78</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Caso especial: cero en cociente -->
+                    <div class="tm-zero-quotient-box">
+                        <div class="tm-zero-quotient-title">⚠️ Cero en el cociente: <code>1248 ÷ 6</code></div>
+                        <p class="tm-carry-explain-text">
+                            Cuando bajas una cifra y <strong>no puedes dividir</strong> (el número es menor que el divisor),
+                            escribes <strong>0</strong> en el cociente y bajas la siguiente cifra.
+                        </p>
+                        <div class="tm-carry-steps">
+                            <div class="tm-carry-step">
+                                <span class="tm-carry-step-n">1</span>
+                                ¿Cabe 6 en <strong>1</strong>? No. Tomo <strong>12</strong>.
+                                12÷6 = <strong>2</strong>. Resto: 0.
+                            </div>
+                            <div class="tm-carry-step">
+                                <span class="tm-carry-step-n">2</span>
+                                Bajo el <strong>4</strong>. Tengo <strong>4</strong>.
+                                ¿Cabe 6 en 4? <span style="color:var(--hub-danger)"><strong>No</strong></span>.
+                                Escribo <span class="tm-carry-hl">0</span> en el cociente y bajo el 8.
+                            </div>
+                            <div class="tm-carry-step">
+                                <span class="tm-carry-step-n">3</span>
+                                Ahora tengo <strong>48</strong>.
+                                48÷6 = <strong>8</strong>. Resto: 0.
+                            </div>
+                            <div class="tm-carry-step">
+                                <span class="tm-carry-step-n">R</span>
+                                Cociente: <strong>208</strong> &nbsp;→&nbsp; 1248 ÷ 6 = <strong>208</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ficha 5: Trucos divisibilidad ampliados -->
+            <div class="tm-slide" id="ld-slide-4" role="tabpanel" hidden>
+                <div class="tm-theory-card">
+                    <div class="tm-theory-badge">Trucos</div>
+                    <h3 class="tm-theory-title">🔎 Criterios de divisibilidad</h3>
+
+                    <div class="tm-tricks-list">
+                        <div class="tm-trick">
+                            <div class="tm-trick-rule">÷ 2</div>
+                            <div class="tm-trick-body">
+                                <div class="tm-trick-eq">48 ÷ 2 = <strong>24</strong></div>
+                                <div class="tm-trick-tip">Si termina en <strong>0, 2, 4, 6 u 8</strong> (número par)</div>
+                            </div>
+                        </div>
+                        <div class="tm-trick">
+                            <div class="tm-trick-rule">÷ 3</div>
+                            <div class="tm-trick-body">
+                                <div class="tm-trick-eq">123 → 1+2+3=6 ÷ 3=2 ✓ → <strong>123 ÷ 3 = 41</strong></div>
+                                <div class="tm-trick-tip">Si la <strong>suma de sus dígitos</strong> es divisible por 3</div>
+                            </div>
+                        </div>
+                        <div class="tm-trick">
+                            <div class="tm-trick-rule">÷ 4</div>
+                            <div class="tm-trick-body">
+                                <div class="tm-trick-eq">1.324 → últimas 2 cifras: 24÷4=6 ✓</div>
+                                <div class="tm-trick-tip">Si las <strong>últimas 2 cifras</strong> son divisibles por 4</div>
+                            </div>
+                        </div>
+                        <div class="tm-trick">
+                            <div class="tm-trick-rule">÷ 5</div>
+                            <div class="tm-trick-body">
+                                <div class="tm-trick-eq">35 ÷ 5 = <strong>7</strong></div>
+                                <div class="tm-trick-tip">Si termina en <strong>0 o 5</strong></div>
+                            </div>
+                        </div>
+                        <div class="tm-trick">
+                            <div class="tm-trick-rule">÷ 6</div>
+                            <div class="tm-trick-body">
+                                <div class="tm-trick-eq">48: par ✓ y 4+8=12 ÷ 3 ✓ → <strong>48 ÷ 6 = 8</strong></div>
+                                <div class="tm-trick-tip">Si es divisible por <strong>2 Y por 3</strong> a la vez</div>
+                            </div>
+                        </div>
+                        <div class="tm-trick">
+                            <div class="tm-trick-rule">÷ 9</div>
+                            <div class="tm-trick-body">
+                                <div class="tm-trick-eq">729 → 7+2+9=18 ÷ 9=2 ✓ → <strong>729 ÷ 9 = 81</strong></div>
+                                <div class="tm-trick-tip">Si la <strong>suma de sus dígitos</strong> es divisible por 9</div>
+                            </div>
+                        </div>
+                        <div class="tm-trick">
+                            <div class="tm-trick-rule">÷ 10</div>
+                            <div class="tm-trick-body">
+                                <div class="tm-trick-eq">470 ÷ 10 = <strong>47</strong></div>
+                                <div class="tm-trick-tip">Si termina en <strong>0</strong></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comprobador interactivo de divisibilidad -->
+                    <div class="tm-divisibility-checker">
+                        <div class="tm-div-checker-title">🧪 Comprueba tú mismo</div>
+                        <p class="tm-div-checker-desc">Escribe un número y mira por cuáles divide:</p>
+                        <div class="tm-div-checker-input-row">
+                            <input type="text" inputmode="numeric" pattern="[0-9]*"
+                                id="div-checker-input" class="tm-div-checker-input"
+                                maxlength="7" placeholder="Escribe un número..."
+                                aria-label="Número para comprobar divisibilidad">
+                            <button class="tm-btn-primary tm-div-checker-btn" id="div-checker-btn"
+                                style="padding:10px 18px; font-size:0.9rem;">Comprobar</button>
+                        </div>
+                        <div id="div-checker-result" class="tm-div-checker-result" aria-live="polite"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navegación -->
+            <div class="tm-slide-controls">
+                <button class="tm-slide-prev" id="ld-prev" aria-label="Ficha anterior" disabled>← Anterior</button>
+                <span class="tm-slide-counter" id="ld-counter">1 / 5</span>
+                <button class="tm-slide-next" id="ld-next" aria-label="Ficha siguiente">Siguiente →</button>
+            </div>
+
+            <button class="tm-start-practice-btn" id="btn-start-practice-divide" data-i18n="startPractice">
+                Empezar a practicar
+            </button>
+        </div>
+    </section>
+
+    <!-- ===== PANTALLA SELECCIÓN PRÁCTICA ===== -->
+    <section id="screen-practice-select" class="tm-screen" aria-label="Selección de práctica" role="main">
+        <div class="tm-container">
+            <div class="tm-learn-header">
+                <button class="tm-back-btn" data-back="screen-home" aria-label="Volver al inicio">← <span data-i18n="back">Volver</span></button>
+                <h2 class="tm-learn-title" id="practice-select-title">Elegir nivel de práctica</h2>
+            </div>
+
+            <p class="tm-section-intro" id="practice-select-desc">Elige el nivel que quieres practicar:</p>
+
+            <div class="tm-level-grid" id="level-grid">
+                <!-- Generado por JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PANTALLA PRÁCTICA ===== -->
+    <section id="screen-practice" class="tm-screen" aria-label="Práctica" role="main">
+        <div class="tm-container tm-practice-container">
+
+            <div class="tm-practice-header">
+                <button class="tm-back-btn" data-back="screen-practice-select" aria-label="Volver a niveles">← Niveles</button>
+                <div class="tm-practice-hud">
+                    <div class="tm-hud-item">
+                        <span class="tm-hud-label" data-i18n="exercise">Ejercicio</span>
+                        <span class="tm-hud-value" id="hud-progress">1/5</span>
+                    </div>
+                    <div class="tm-hud-item">
+                        <span class="tm-hud-label" data-i18n="score">Puntos</span>
+                        <span class="tm-hud-value tm-streak" id="hud-score">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Área del ejercicio: se rellena por JS -->
+            <div id="practice-exercise-area" class="tm-exercise-area" aria-live="polite">
+                <!-- Ejercicios paso a paso inyectados aquí -->
+            </div>
+
+            <!-- Feedback global del ejercicio -->
+            <div id="practice-feedback" class="tm-practice-feedback hidden" aria-live="polite" role="status"></div>
+
+            <!-- Botones de control -->
+            <div class="tm-practice-controls hidden" id="practice-controls">
+                <button class="tm-btn-secondary" id="btn-practice-hint" data-i18n="seeHint">Ver pista</button>
+                <button class="tm-btn-primary" id="btn-practice-next" data-i18n="nextExercise">Siguiente ejercicio</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PANTALLA RESULTADO ===== -->
+    <section id="screen-result" class="tm-screen" aria-label="Resultado" role="main">
+        <div class="tm-container tm-result-container">
+
+            <div class="tm-result-trophy" aria-hidden="true" id="result-trophy">🏆</div>
+            <h2 class="tm-result-title" data-i18n="roundComplete">¡Ronda completada!</h2>
+            <p class="tm-result-subtitle" id="result-message"></p>
+
+            <div class="tm-result-grid">
+                <div class="tm-result-card">
+                    <span class="tm-result-icon" aria-hidden="true">✓</span>
+                    <span class="tm-result-label" data-i18n="correct">Correctos</span>
+                    <span class="tm-result-value" id="result-correct">0/5</span>
+                </div>
+                <div class="tm-result-card">
+                    <span class="tm-result-icon" aria-hidden="true">⭐</span>
+                    <span class="tm-result-label" data-i18n="score">Puntos</span>
+                    <span class="tm-result-value" id="result-score">0</span>
+                </div>
+            </div>
+
+            <div class="tm-result-points" aria-live="polite">
+                <div class="points-earned" id="result-points">+0 pts</div>
+                <div class="xp-earned" id="result-xp">+0 XP</div>
+            </div>
+
+            <div class="tm-result-actions">
+                <button class="tm-btn-secondary" id="btn-again" data-i18n="playAgain">Repetir</button>
+                <button class="tm-btn-primary" id="btn-home" data-i18n="goHome">Inicio</button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===== PANTALLA TABLAS COMPLETAS ===== -->
+    <section id="screen-table" class="tm-screen" aria-label="Tabla de multiplicar completa" role="main">
+        <div class="tm-container tm-learn-container">
+            <div class="tm-learn-header">
+                <button class="tm-back-btn" data-back="screen-home" aria-label="Volver al inicio">← <span data-i18n="back">Volver</span></button>
+                <h2 class="tm-learn-title" data-i18n="fullTableTitle">Tablas completas</h2>
+            </div>
+
+            <p class="tm-section-intro" data-i18n="fullTableHint">Haz clic en una celda para verla destacada. Pasa el ratón para resaltar fila y columna.</p>
+
+            <div class="tm-table-wrapper">
+                <div class="tm-mult-grid" id="mult-grid-10x10" role="grid" aria-label="Tabla de multiplicar del 1 al 10">
+                    <!-- Generado por JS -->
+                </div>
+            </div>
+
+            <div class="tm-table-cell-info hidden" id="table-cell-info" aria-live="polite">
+                <!-- Información de celda seleccionada -->
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<div id="tm-quit-modal" class="tm-quit-modal hidden" role="dialog" aria-modal="true" aria-labelledby="tm-quit-title" tabindex="-1">
+    <div class="tm-quit-dialog">
+        <h3 id="tm-quit-title">¿Salir de la práctica?</h3>
+        <p>Se perderá el progreso actual.</p>
+        <div class="tm-quit-actions">
+            <button class="tm-action-btn tm-secondary" id="tm-quit-cancel">Cancelar</button>
+            <button class="tm-action-btn tm-primary" id="tm-quit-ok">Salir</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Firebase SDK ===== -->
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
+
+<!-- Platform modules -->
+<script src="../platform/firebase-config.js"></script>
+<script src="../platform/i18n-platform.js"></script>
+<script src="../platform/auth.js"></script>
+<script src="../platform/firestore.js"></script>
+<script src="../platform/platform-header.js"></script>
+
+<!-- Game modules -->
+<script src="i18n.js"></script>
+<script src="game.js"></script>
+
+<script>
+    PlatformHeader.init({ gameName: 'TableMaster', gameIcon: '✖️', rootPath: '../' });
+    TableMasterGame.init();
+</script>
+    <script src="../platform/register-sw.js"></script>
+</body>
+</html>

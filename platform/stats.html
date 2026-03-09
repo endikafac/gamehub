@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas — Games Hub</title>
+    <link rel="stylesheet" href="platform.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="i18n-platform.js"></script>
+    <script src="auth.js"></script>
+    <script src="firestore.js"></script>
+    <script src="platform-header.js"></script>
+    <style>
+        body { background: var(--bg-page, #0f172a); color: var(--text-primary, #f8fafc); }
+        .stats-page { max-width: 900px; margin: 0 auto; padding: 80px 16px 40px; }
+        .stats-section { margin-bottom: 32px; }
+        .stats-section-title { font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700; color: var(--hub-brand-color, #6366f1); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color, #334155); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+        .stat-card { background: var(--surface-1, #1e293b); border: 1px solid var(--border-color, #334155); border-radius: 12px; padding: 16px; text-align: center; }
+        .stat-card-val { font-family: 'Orbitron', monospace; font-size: 1.6rem; font-weight: 700; color: var(--hub-brand-color, #6366f1); }
+        .stat-card-lbl { font-size: 0.75rem; color: var(--text-secondary, #94a3b8); margin-top: 4px; }
+        .no-data { color: var(--text-muted, #64748b); text-align: center; padding: 32px; font-style: italic; }
+        .guest-notice { background: rgba(99,102,241,0.1); border: 1px solid #6366f1; border-radius: 8px; padding: 12px 16px; margin-bottom: 24px; font-size: 0.875rem; }
+    </style>
+</head>
+<body>
+<main id="main-content">
+    <div class="stats-page">
+        <div id="stats-content">Cargando estadísticas...</div>
+    </div>
+</main>
+<script>
+const GAME_LABELS = {
+    mathMaster:   { icon: '🧮', name: 'MathMaster' },
+    snake:        { icon: '🐍', name: 'Snake' },
+    tableMaster:  { icon: '✖',  name: 'TableMaster' },
+    typingMaster: { icon: '⌨️', name: 'TypeMaster' },
+    wordSearch:   { icon: '🔍', name: 'WordSearch' },
+    crossword:    { icon: '✏️', name: 'Crucigrama' },
+    geoQuiz:      { icon: '🗺️', name: 'GeoQuiz' },
+};
+
+function formatTime(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    if (h > 0) return `${h}h ${m}m`;
+    return `${m}m`;
+}
+
+async function renderStats(uid) {
+    const content = document.getElementById('stats-content');
+    let html = '';
+
+    if (!uid) {
+        html += '<div class="guest-notice">⚠️ Inicia sesión para ver tus estadísticas guardadas en la nube. Se muestran solo los datos locales.</div>';
+    }
+
+    // Global stats (from user profile)
+    const gameIds = ['mathMaster', 'snake', 'tableMaster', 'typingMaster', 'wordSearch', 'crossword', 'geoQuiz'];
+    let totalGames = 0, totalPoints = 0, totalTime = 0;
+
+    html += '<div class="stats-section"><div class="stats-section-title">🌐 General</div><div class="stats-grid" id="global-stats-grid"></div></div>';
+
+    let perGameHtml = '';
+    for (const gid of gameIds) {
+        const label = GAME_LABELS[gid];
+        let stats = null;
+        if (uid && typeof PlatformFirestore !== 'undefined') {
+            stats = await PlatformFirestore.getGameStats(uid, gid).catch(() => null);
+        }
+        if (!stats || stats.totalGames === 0) continue;
+        totalGames += stats.totalGames || 0;
+        totalPoints += 0; // from profile
+        totalTime += stats.totalTime || 0;
+
+        perGameHtml += `<div class="stats-section">
+            <div class="stats-section-title">${label.icon} ${label.name}</div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-card-val">${stats.totalGames}</div><div class="stat-card-lbl">Partidas</div></div>
+                <div class="stat-card"><div class="stat-card-val">${stats.totalCorrect || 0}</div><div class="stat-card-lbl">Correctas</div></div>
+                <div class="stat-card"><div class="stat-card-val">${stats.bestStreak || 0}</div><div class="stat-card-lbl">Mejor racha</div></div>
+                <div class="stat-card"><div class="stat-card-val">${formatTime(stats.totalTime || 0)}</div><div class="stat-card-lbl">Tiempo total</div></div>
+            </div>
+        </div>`;
+    }
+
+    // Fill global grid
+    html = html.replace('id="global-stats-grid">', `id="global-stats-grid">
+        <div class="stat-card"><div class="stat-card-val">${totalGames}</div><div class="stat-card-lbl">Partidas totales</div></div>
+        <div class="stat-card"><div class="stat-card-val">${formatTime(totalTime)}</div><div class="stat-card-lbl">Tiempo jugado</div></div>
+    `);
+
+    html += perGameHtml;
+
+    if (totalGames === 0) {
+        html += '<div class="no-data">Todavía no hay estadísticas. ¡Juega una partida!</div>';
+    }
+
+    content.innerHTML = html;
+}
+
+async function init() {
+    PlatformHeader.init({ gameName: 'Estadísticas', gameIcon: '📊', rootPath: '../' });
+    if (typeof PlatformAuth !== 'undefined') {
+        PlatformAuth.onAuthStateChanged(async user => {
+            await renderStats(user?.uid || null);
+        });
+    } else {
+        await renderStats(null);
+    }
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

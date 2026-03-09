@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TypeMaster">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <meta name="description" content="TypeMaster — Juego de mecanografía con 10 niveles. Mide tu velocidad en PPM y mejora tu precisión.">
+    <title>TypeMaster — Games Hub</title>
+
+    <!-- Platform design system first -->
+    <link rel="stylesheet" href="../platform/platform.css">
+    <!-- Game-specific styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ══ SCREEN 1: HOME ════════════════════════════════════════════════════════ -->
+<main id="main-content">
+<section id="ty-home" class="ty-screen active" aria-label="Pantalla de inicio">
+<div class="tm-page">
+
+    <div class="ty-home-header">
+        <h1 class="ty-home-title" id="ty-game-title">⌨️ Type<span>Master</span></h1>
+        <p class="ty-home-subtitle" id="ty-game-subtitle">Aprende a escribir rápido</p>
+    </div>
+
+    <p class="ty-lang-info" id="ty-lang-info">Español</p>
+
+    <p class="ty-section-title" id="ty-section-title">Elige el nivel</p>
+
+    <div class="ty-level-grid" id="ty-level-grid" role="list" aria-label="Niveles disponibles">
+        <!-- Generado por JS -->
+    </div>
+
+    <div id="ty-level-desc" class="ty-level-desc" aria-live="polite">
+        Selecciona un nivel para comenzar
+    </div>
+
+    <div class="ty-kb-hint hidden" id="ty-home-kb-hint">
+        Coloca tus dedos en la fila central: A S D F (mano izquierda) J K L ; (mano derecha)
+    </div>
+
+    <div class="ty-best-wpm" id="ty-best-wpm" style="display:none;text-align:center;margin:8px 0">
+        Mejor: <span>0</span>
+    </div>
+
+    <div class="ty-home-actions">
+        <button class="ty-btn ty-btn-primary" id="ty-start-btn" disabled>
+            Empezar
+        </button>
+    </div>
+
+    <div class="ty-quick-links">
+        <button class="ty-quick-link-btn" id="ty-stats-btn">📊 Estadísticas</button>
+        <button class="ty-quick-link-btn" id="ty-achievements-btn">🏆 Logros</button>
+    </div>
+
+</div>
+</section>
+
+<!-- ══ SCREEN 2: GAME ════════════════════════════════════════════════════════ -->
+<section id="ty-game" class="ty-screen" aria-label="Pantalla de juego">
+<div class="tm-page">
+
+    <div class="ty-game-header">
+        <span class="ty-level-badge" id="ty-level-badge">Nivel 1</span>
+    </div>
+
+    <!-- HUD -->
+    <div class="ty-hud" aria-live="polite" aria-atomic="true">
+        <div class="ty-stat">
+            <div class="ty-stat-val ty-wpm" id="ty-wpm-val" aria-label="Pulsaciones por minuto">0</div>
+            <div class="ty-stat-lbl" id="ty-wpm-lbl">PPM</div>
+        </div>
+        <div class="ty-stat">
+            <div class="ty-stat-val ty-acc" id="ty-acc-val" aria-label="Precisión">100%</div>
+            <div class="ty-stat-lbl" id="ty-acc-lbl">Precisión</div>
+        </div>
+        <div class="ty-stat">
+            <div class="ty-stat-val ty-time" id="ty-time-val" aria-label="Tiempo transcurrido">0:00</div>
+            <div class="ty-stat-lbl" id="ty-time-lbl">Tiempo</div>
+        </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="ty-progress-wrap"
+         role="progressbar"
+         aria-valuemin="0"
+         aria-valuemax="100"
+         aria-valuenow="0"
+         aria-label="Progreso del texto">
+        <div class="ty-progress-bar" id="ty-progress" style="width:0%"></div>
+    </div>
+
+    <!-- Text display area -->
+    <div class="ty-text-area"
+         id="ty-text-display"
+         aria-live="polite"
+         aria-label="Texto a escribir"></div>
+
+    <!-- Virtual keyboard (levels 1-3) -->
+    <div id="ty-keyboard-wrap" class="ty-keyboard hidden" aria-hidden="true">
+        <!-- Rendered by JS -->
+    </div>
+
+    <!-- Input hint -->
+    <p class="ty-input-hint" id="ty-input-hint">Comienza a escribir...</p>
+
+    <!-- Quit -->
+    <div class="ty-game-footer">
+        <button class="ty-btn ty-btn-ghost" id="ty-quit-btn">Salir</button>
+    </div>
+
+    <!-- Hidden input for mobile keyboard -->
+    <input id="ty-mobile-input"
+           type="text"
+           inputmode="text"
+           autocomplete="off"
+           autocorrect="off"
+           autocapitalize="none"
+           spellcheck="false"
+           aria-hidden="true"
+           tabindex="-1"
+           style="position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;pointer-events:none;border:none;outline:none;">
+
+</div>
+</section>
+
+<!-- ══ SCREEN 3: RESULTS ═════════════════════════════════════════════════════ -->
+<section id="ty-result" class="ty-screen" aria-label="Pantalla de resultados">
+<div class="tm-page">
+
+    <div class="ty-result-card">
+        <h2 class="ty-result-title" id="ty-result-title">¡Resultado!</h2>
+
+        <div class="ty-stars" id="ty-stars" aria-label="Estrellas obtenidas">⭐⭐⭐</div>
+
+        <div class="ty-result-wpm" id="ty-final-wpm" aria-live="polite">0</div>
+        <div class="ty-result-wpm-lbl" id="ty-final-wpm-lbl">PPM</div>
+
+        <div class="ty-result-grid">
+            <div class="ty-result-item">
+                <div class="ty-result-item-val" id="ty-final-acc">100%</div>
+                <div class="ty-result-item-lbl" id="ty-result-acc-lbl">Precisión</div>
+            </div>
+            <div class="ty-result-item">
+                <div class="ty-result-item-val" id="ty-final-time">0:00</div>
+                <div class="ty-result-item-lbl" id="ty-result-time-lbl">Tiempo</div>
+            </div>
+            <div class="ty-result-item">
+                <div class="ty-result-item-val" id="ty-final-score">0</div>
+                <div class="ty-result-item-lbl" id="ty-result-score-lbl">Puntos</div>
+            </div>
+            <div class="ty-result-item">
+                <div class="ty-result-item-val" id="ty-final-errors">0</div>
+                <div class="ty-result-item-lbl" id="ty-result-err-lbl">Errores</div>
+            </div>
+        </div>
+
+        <div class="ty-new-record hidden" id="ty-new-record">🏆 ¡Nuevo récord!</div>
+
+        <div class="ty-achievements-unlocked hidden" id="ty-achievements-unlocked">
+            <!-- Badges inserted by JS -->
+        </div>
+
+        <div class="ty-result-btns">
+            <button class="ty-btn ty-btn-secondary" id="ty-retry-btn">Reintentar</button>
+            <button class="ty-btn ty-btn-primary"   id="ty-next-btn">Siguiente nivel</button>
+            <button class="ty-btn ty-btn-ghost"     id="ty-menu-btn">Menú</button>
+        </div>
+    </div>
+
+</div>
+</section>
+
+</main>
+
+<!-- Quit confirmation dialog -->
+<div id="ty-quit-modal" class="ty-quit-modal hidden" role="dialog" aria-modal="true" aria-labelledby="ty-quit-title" tabindex="-1">
+    <div class="ty-quit-dialog">
+        <h3 id="ty-quit-title">¿Salir?</h3>
+        <p id="ty-quit-msg">Se perderá el progreso actual.</p>
+        <div class="ty-quit-actions">
+            <button class="ty-btn ty-btn-secondary" id="ty-quit-cancel">Cancelar</button>
+            <button class="ty-btn ty-btn-primary" id="ty-quit-ok">Salir</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══ Scripts ════════════════════════════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
+<script src="../platform/firebase-config.js"></script>
+<script src="../platform/i18n-platform.js"></script>
+<script src="../platform/auth.js"></script>
+<script src="../platform/firestore.js"></script>
+<script src="../platform/achievements.js"></script>
+<script src="../platform/platform-header.js"></script>
+<script src="texts.js"></script>
+<script src="game.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    PlatformHeader.init({ gameName: 'TypeMaster', gameIcon: '⌨️', rootPath: '../' });
+    TypeMasterGame.init();
+});
+</script>
+    <script src="../platform/register-sw.js"></script>
+</body>
+</html>

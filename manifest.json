@@ -1,0 +1,58 @@
+{
+  "name": "Games Hub — Aprende Jugando",
+  "short_name": "Games Hub",
+  "description": "Juegos educativos: mates, palabras, geografía, idiomas y más.",
+  "start_url": "/index.html?source=pwa",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f0f1a",
+  "theme_color": "#6366f1",
+  "lang": "es",
+  "categories": ["education", "games", "kids"],
+  "icons": [
+    { "src": "/icons/icon-72.png",   "sizes": "72x72",   "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-96.png",   "sizes": "96x96",   "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-128.png",  "sizes": "128x128", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-144.png",  "sizes": "144x144", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-152.png",  "sizes": "152x152", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-192.png",  "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/icon-384.png",  "sizes": "384x384", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png",  "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "screenshots": [
+    {
+      "src": "/icons/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Games Hub — pantalla principal"
+    },
+    {
+      "src": "/icons/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Games Hub — móvil"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "MathMaster",
+      "short_name": "Mates",
+      "url": "/mathMaster-EFC/index.html?source=pwa",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Word Search",
+      "short_name": "Palabras",
+      "url": "/wordSearch-EFC/index.html?source=pwa",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "GeoQuiz",
+      "short_name": "Geo",
+      "url": "/geoQuiz-EFC/index.html?source=pwa",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    }
+  ]
+}

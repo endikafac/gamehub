@@ -1,0 +1,695 @@
+/* ============================================================
+   TypeMaster - Game Styles
+   Imports platform.css tokens via CSS custom properties.
+   ============================================================ */
+
+/* ── Google Fonts (Roboto Mono already loaded by platform, but ensure it) ── */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;600&display=swap');
+
+/* ── Page wrapper ─────────────────────────────────────────── */
+.tm-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 16px 40px;
+}
+
+/* ── Screen system ────────────────────────────────────────── */
+.ty-screen {
+    display: none;
+}
+.ty-screen.active {
+    display: block;
+}
+
+/* ── Home screen ──────────────────────────────────────────── */
+.ty-home-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.ty-home-title {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    margin: 0 0 8px;
+    letter-spacing: 0.04em;
+}
+
+.ty-home-title span {
+    color: var(--hub-brand-color);
+}
+
+.ty-home-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.ty-lang-info {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.ty-section-title {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin: 0 0 16px;
+    font-weight: 500;
+}
+
+/* ── Level grid ───────────────────────────────────────────── */
+.ty-level-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    max-width: 600px;
+    margin: 0 auto 20px;
+}
+
+.ty-level-btn {
+    padding: 14px 0;
+    background: var(--bg-surface);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--text-primary);
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    transition: border-color var(--t-fast), background var(--t-fast), transform var(--t-fast);
+}
+
+.ty-level-btn:hover:not(.locked) {
+    border-color: var(--hub-brand-color);
+    transform: translateY(-2px);
+}
+
+.ty-level-btn.locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.ty-level-btn.completed {
+    border-color: #22c55e;
+}
+
+.ty-level-btn.completed::after {
+    content: ' ✓';
+    font-size: 0.75rem;
+    color: #22c55e;
+}
+
+.ty-level-btn.current-lv {
+    border-color: #a78bfa;
+    background: rgba(99, 102, 241, 0.15);
+}
+
+.ty-level-btn.selected {
+    border-color: var(--hub-brand-color);
+    background: rgba(99, 102, 241, 0.2);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+}
+
+/* ── Level description ────────────────────────────────────── */
+.ty-level-desc {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    min-height: 2.5em;
+    margin: 12px auto;
+    max-width: 520px;
+    line-height: 1.5;
+}
+
+.ty-level-name {
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+/* ── Keyboard hint (home screen) ──────────────────────────── */
+.ty-kb-hint {
+    text-align: center;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin: 12px auto;
+}
+
+.ty-kb-hint.hidden {
+    display: none;
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.ty-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all var(--t-fast);
+}
+
+.ty-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.ty-btn-primary {
+    background: var(--hub-brand-color);
+    color: #fff;
+    border-color: var(--hub-brand-color);
+}
+
+.ty-btn-primary:hover:not(:disabled) {
+    background: var(--hub-brand-dark);
+    border-color: var(--hub-brand-dark);
+    transform: translateY(-1px);
+}
+
+.ty-btn-secondary {
+    background: transparent;
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.ty-btn-secondary:hover:not(:disabled) {
+    border-color: var(--text-secondary);
+}
+
+.ty-btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border-color: transparent;
+    padding: 12px 16px;
+}
+
+.ty-btn-ghost:hover:not(:disabled) {
+    color: var(--text-primary);
+    background: var(--bg-raised);
+}
+
+.ty-home-actions {
+    text-align: center;
+    margin-top: 24px;
+}
+
+.ty-quick-links {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.ty-quick-link-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 8px 16px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all var(--t-fast);
+    min-height: 44px;
+}
+
+.ty-quick-link-btn:hover {
+    border-color: var(--hub-brand-color);
+    color: var(--text-primary);
+}
+
+/* ── HUD ──────────────────────────────────────────────────── */
+.ty-hud {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.ty-stat {
+    text-align: center;
+    min-width: 80px;
+}
+
+.ty-stat-val {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.ty-stat-lbl {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+}
+
+.ty-wpm  { color: #a78bfa; }
+.ty-acc  { color: #34d399; }
+.ty-time { color: #60a5fa; }
+
+/* ── Progress bar ─────────────────────────────────────────── */
+.ty-progress-wrap {
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    margin: 8px 0;
+    overflow: hidden;
+}
+
+.ty-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1, #a78bfa);
+    transition: width 0.1s linear;
+    border-radius: 3px;
+}
+
+/* ── Text display area ────────────────────────────────────── */
+.ty-text-area {
+    font-family: 'Roboto Mono', 'Courier New', monospace;
+    font-size: 1.4rem;
+    line-height: 2;
+    letter-spacing: 0.02em;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    margin: 16px 0;
+    word-break: break-word;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-height: 100px;
+    position: relative;
+}
+
+/* ── Character states ─────────────────────────────────────── */
+.ty-char {
+    display: inline;
+    position: relative;
+    transition: background var(--t-fast), color var(--t-fast);
+}
+
+.ty-char.pending {
+    color: var(--text-secondary);
+}
+
+.ty-char.correct {
+    color: #22c55e;
+}
+
+.ty-char.wrong {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+    border-radius: 2px;
+}
+
+.ty-char.current {
+    background: #f59e0b;
+    color: #000;
+    border-radius: 2px;
+    animation: cursor-pulse 0.9s ease-in-out infinite;
+}
+
+@keyframes cursor-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.6; }
+}
+
+/* Space characters */
+.ty-char.wrong.ty-space {
+    background: rgba(239, 68, 68, 0.25);
+    text-decoration: underline;
+    text-decoration-color: #ef4444;
+}
+
+/* ── Input hint ───────────────────────────────────────────── */
+.ty-input-hint {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin: 8px 0;
+}
+
+/* ── Game quit button ─────────────────────────────────────── */
+.ty-game-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+/* ── Virtual keyboard ─────────────────────────────────────── */
+.ty-keyboard {
+    max-width: 680px;
+    margin: 16px auto 0;
+    user-select: none;
+}
+
+.ty-keyboard.hidden {
+    display: none;
+}
+
+.ty-kb-row {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+.ty-key {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #fff;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.1s ease;
+    flex-shrink: 0;
+    opacity: 0.55;
+}
+
+[data-theme="light"] .ty-key {
+    color: #1e293b;
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.ty-key.space {
+    width: 200px;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+}
+
+.ty-key.wide {
+    width: 66px;
+}
+
+.ty-key.current-key {
+    transform: scale(1.18);
+    box-shadow: 0 0 14px currentColor;
+    opacity: 1 !important;
+    z-index: 1;
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Finger colour classes */
+.ty-finger-left-pinky  { background-color: rgba(239, 68, 68, 0.5); }
+.ty-finger-left-ring   { background-color: rgba(249, 115, 22, 0.5); }
+.ty-finger-left-mid    { background-color: rgba(234, 179, 8, 0.5); }
+.ty-finger-left-idx    { background-color: rgba(34, 197, 94, 0.5); }
+.ty-finger-right-idx   { background-color: rgba(59, 130, 246, 0.5); }
+.ty-finger-right-mid   { background-color: rgba(139, 92, 246, 0.5); }
+.ty-finger-right-ring  { background-color: rgba(236, 72, 153, 0.5); }
+.ty-finger-right-pinky { background-color: rgba(6, 182, 212, 0.5); }
+.ty-finger-thumb       { background-color: rgba(148, 163, 184, 0.3); }
+
+/* ── Results screen ───────────────────────────────────────── */
+.ty-result-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.ty-result-title {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    color: var(--text-primary);
+    margin: 0 0 8px;
+}
+
+.ty-stars {
+    font-size: 2.5rem;
+    margin: 12px 0;
+    letter-spacing: 4px;
+}
+
+.ty-result-wpm {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 900;
+    color: #a78bfa;
+    line-height: 1;
+}
+
+.ty-result-wpm-lbl {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 4px;
+    margin-bottom: 16px;
+}
+
+.ty-result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.ty-result-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+[data-theme="light"] .ty-result-item {
+    background: var(--bg-raised);
+}
+
+.ty-result-item-val {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.ty-result-item-lbl {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+}
+
+.ty-new-record {
+    color: var(--hub-accent);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin: 12px 0;
+    animation: record-pop 0.4s ease;
+}
+
+.ty-new-record.hidden { display: none; }
+
+@keyframes record-pop {
+    0%   { transform: scale(0.7); opacity: 0; }
+    60%  { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.ty-achievements-unlocked {
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.ty-achievements-unlocked.hidden { display: none; }
+
+.ty-achievement-badge {
+    display: inline-block;
+    margin: 4px;
+    padding: 4px 10px;
+    background: rgba(99, 102, 241, 0.2);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #a78bfa;
+}
+
+.ty-result-btns {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+/* ── Game screen level badge ──────────────────────────────── */
+.ty-game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ty-level-badge {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    background: var(--bg-raised);
+    border-radius: 20px;
+    padding: 4px 12px;
+}
+
+/* ── Best WPM display ─────────────────────────────────────── */
+.ty-best-wpm {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.ty-best-wpm span {
+    color: #a78bfa;
+    font-weight: 600;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 600px) {
+    .ty-level-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+    }
+
+    .ty-level-btn {
+        padding: 10px 0;
+        font-size: 1rem;
+    }
+
+    .ty-text-area {
+        font-size: 1.1rem;
+        padding: 16px;
+    }
+
+    .ty-stat-val {
+        font-size: 1.5rem;
+    }
+
+    .ty-key {
+        width: 32px;
+        height: 36px;
+        font-size: 0.65rem;
+    }
+
+    .ty-key.space {
+        width: 120px;
+    }
+
+    .ty-key.wide {
+        width: 50px;
+    }
+
+    .ty-result-wpm {
+        font-size: 2.2rem;
+    }
+
+    .ty-home-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .ty-level-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 4px;
+    }
+
+    .ty-level-btn {
+        font-size: 0.9rem;
+    }
+
+    .ty-keyboard {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .ty-key {
+        width: max(32px, 8vw);
+        height: max(36px, 9vw);
+        font-size: 0.75rem;
+    }
+
+    .ty-key.space {
+        width: max(120px, 30vw);
+    }
+
+    .ty-key.wide {
+        width: max(46px, 11.5vw);
+    }
+}
+
+/* ── Loading / error states ───────────────────────────────── */
+.ty-error-msg {
+    text-align: center;
+    color: var(--hub-danger);
+    font-size: 0.9rem;
+    margin: 8px 0;
+}
+
+/* ── Finish overlay ───────────────────────────────────────── */
+.ty-finish-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    animation: fade-in 0.2s ease;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ── Quit confirmation modal ─────────────────────────────── */
+.ty-quit-modal {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-overlay, rgba(0,0,0,0.7));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+.ty-quit-modal.hidden { display: none; }
+.ty-quit-dialog {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md, 12px);
+    padding: 24px;
+    max-width: 340px;
+    width: 90%;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+}
+.ty-quit-dialog h3 { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+.ty-quit-dialog p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px; }
+.ty-quit-actions { display: flex; gap: 10px; justify-content: center; }
+.ty-quit-actions .ty-btn { min-width: 100px; }

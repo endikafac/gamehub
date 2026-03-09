@@ -1,0 +1,307 @@
+/* GeoQuiz - Styles (uses platform.css variables) */
+
+:root {
+    --gq-correct: #22c55e;
+    --gq-wrong:   #ef4444;
+    --gq-warn:    #f59e0b;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-body, 'Segoe UI', sans-serif);
+    background: var(--bg-page);
+    color: var(--text-primary);
+    min-height: 100vh;
+}
+
+/* ── SCREENS ── */
+.gq-screen { display: none; padding: 1rem; max-width: 900px; margin: 0 auto; }
+.gq-screen.active { display: block; }
+
+/* ── HOME ── */
+#gq-home { text-align: center; padding-top: 2rem; }
+#gq-home h1 { font-size: 2.2rem; margin: 0 0 0.4rem; }
+#gq-home p.subtitle { color: var(--text-secondary); margin: 0 0 2rem; }
+
+.gq-mode-cards { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
+
+.gq-mode-card {
+    background: var(--bg-surface);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem 2.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+    min-width: 200px;
+    text-align: center;
+    font-family: inherit;
+    color: inherit;
+}
+.gq-mode-card:hover { border-color: var(--hub-brand-color); transform: translateY(-2px); }
+.gq-mode-card .icon { font-size: 3rem; display: block; margin-bottom: 0.5rem; }
+.gq-mode-card h2 { margin: 0 0 0.4rem; font-size: 1.2rem; }
+.gq-mode-card p { margin: 0; font-size: 0.85rem; color: var(--text-secondary); }
+
+/* ── TABS ── */
+.gq-tabs {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.4rem;
+}
+.gq-tab {
+    padding: 0.45rem 1rem;
+    border-radius: 8px 8px 0 0;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: color 0.2s, background 0.2s;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.gq-tab.active { color: var(--hub-brand-color); background: var(--bg-surface); font-weight: 600; }
+.gq-tab:hover:not(.active) { color: var(--text-primary); background: var(--bg-surface); }
+
+/* ── ATLAS ── */
+#gq-atlas .atlas-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+#gq-atlas .atlas-header h2 { margin: 0; }
+#gq-atlas .back-btn {
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+#gq-search {
+    width: 100%;
+    max-width: 360px;
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-size: 1rem;
+    margin-left: auto;
+}
+
+.gq-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.7rem;
+}
+
+/* Continent section header */
+.gq-section-header {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0 0.2rem;
+    margin-top: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.gq-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.8rem;
+    transition: border-color 0.15s;
+}
+.gq-card:hover { border-color: var(--hub-brand-color); }
+.gq-card .card-icon { font-size: 1.8rem; margin-bottom: 0.3rem; display: block; }
+.gq-card .card-name { font-weight: 600; font-size: 0.92rem; margin: 0 0 0.2rem; }
+.gq-card .card-info { font-size: 0.8rem; color: var(--text-secondary); margin: 0; line-height: 1.4; }
+
+/* ── QUIZ SETUP ── */
+#gq-quiz-setup { text-align: center; max-width: 600px; margin: 0 auto; padding-top: 1rem; }
+#gq-quiz-setup h2 { margin-bottom: 0.3rem; }
+#gq-quiz-setup p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+
+.gq-levels-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+}
+.gq-level-btn {
+    padding: 0.6rem 0;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: border-color 0.2s, background 0.2s;
+    min-height: 44px;
+}
+.gq-level-btn:hover, .gq-level-btn.active {
+    border-color: var(--hub-brand-color);
+    background: var(--hub-brand-color);
+    color: #fff;
+}
+
+.gq-start-btn, .gq-action-btn {
+    padding: 0.7rem 2rem;
+    border-radius: 8px;
+    border: none;
+    background: var(--hub-brand-color);
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: opacity 0.2s;
+    margin: 0.3rem;
+}
+.gq-start-btn:hover, .gq-action-btn:hover { opacity: 0.85; }
+.gq-action-btn.secondary {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+/* ── QUIZ GAME ── */
+#gq-quiz { max-width: 680px; margin: 0 auto; }
+
+.gq-quiz-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+.gq-quiz-topbar strong { color: var(--text-primary); }
+
+.gq-timer-bar-wrap {
+    width: 100%;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+.gq-timer-bar {
+    height: 100%;
+    background: var(--hub-brand-color);
+    border-radius: 3px;
+    transition: width 0.25s linear, background 0.25s;
+}
+.gq-timer-bar.warn   { background: var(--gq-warn); }
+.gq-timer-bar.danger { background: var(--gq-wrong); }
+
+.gq-question-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+    text-align: center;
+}
+.gq-question-card .q-context { font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 0.5rem; }
+.gq-question-card .q-icon { font-size: 2.5rem; margin: 0 0 0.5rem; display: block; }
+.gq-question-card .q-text { font-size: 1.1rem; font-weight: 600; margin: 0; }
+
+.gq-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+.gq-option {
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    border: 2px solid var(--border-color);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 0.95rem;
+    text-align: left;
+    transition: border-color 0.15s, background 0.15s;
+    min-height: 44px;
+}
+.gq-option:hover:not(:disabled) { border-color: var(--hub-brand-color); }
+.gq-option.correct { border-color: var(--gq-correct); background: rgba(34,197,94,.12); color: var(--gq-correct); font-weight: 700; }
+.gq-option.wrong   { border-color: var(--gq-wrong);   background: rgba(239,68,68,.12);  color: var(--gq-wrong);   }
+.gq-option:disabled { cursor: default; }
+
+.gq-feedback {
+    text-align: center;
+    font-size: 0.95rem;
+    min-height: 1.4rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+.gq-feedback.good { color: var(--gq-correct); font-weight: 700; }
+.gq-feedback.bad  { color: var(--gq-wrong);   font-weight: 700; }
+
+/* ── RESULTS ── */
+#gq-results { text-align: center; max-width: 600px; margin: 0 auto; padding-top: 1.5rem; }
+#gq-results h2 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+
+.gq-score-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 6px solid var(--hub-brand-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem auto;
+}
+.gq-score-circle .pts { font-size: 1.6rem; font-weight: 800; }
+.gq-score-circle .pts-label { font-size: 0.75rem; color: var(--text-secondary); }
+
+.gq-result-stats {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 1rem 0 1.5rem;
+}
+.gq-result-stat {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.6rem 1.2rem;
+    text-align: center;
+}
+.gq-result-stat .val { font-size: 1.3rem; font-weight: 700; }
+.gq-result-stat .lbl { font-size: 0.78rem; color: var(--text-secondary); }
+
+.gq-stars { font-size: 2rem; margin: 0.5rem 0; }
+
+@media (max-width: 520px) {
+    .gq-options { grid-template-columns: 1fr; }
+    .gq-mode-cards { flex-direction: column; align-items: center; }
+    .gq-levels-grid { grid-template-columns: repeat(5, 1fr); }
+}
+
+/* ── QUIT MODAL ── */
+.gq-btn { padding: 10px 20px; border-radius: var(--radius-md, 12px); font-weight: 600; cursor: pointer; border: 2px solid transparent; font-size: 0.9rem; min-height: 44px; transition: all 0.15s ease; font-family: var(--font-body); }
+.gq-btn-primary { background: var(--hub-brand-color); color: #fff; border-color: var(--hub-brand-color); }
+.gq-btn-primary:hover { background: var(--hub-brand-dark, #4f46e5); }
+.gq-btn-secondary { background: var(--bg-surface); color: var(--text-primary); border-color: var(--border-color); }
+.gq-btn-secondary:hover { border-color: var(--hub-brand-color); }
+.gq-quit-modal { position: fixed; inset: 0; background: var(--bg-overlay, rgba(0,0,0,0.7)); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.gq-quit-modal.hidden { display: none; }
+.gq-quit-dialog { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md, 12px); padding: 24px; max-width: 340px; width: 90%; text-align: center; box-shadow: var(--shadow-lg); }
+.gq-quit-dialog h3 { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+.gq-quit-dialog p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px; }
+.gq-quit-actions { display: flex; gap: 10px; justify-content: center; }

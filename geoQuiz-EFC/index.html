@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GeoQuiz">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <title>GeoQuiz</title>
+    <link rel="stylesheet" href="../platform/platform.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Platform Header (injected) -->
+<div id="platform-header"></div>
+
+<main id="main-content">
+
+<!-- ── HOME ─────────────────────────────────────────────────────── -->
+<div id="gq-home" class="gq-screen active">
+    <h1 id="gq-app-name">GeoQuiz</h1>
+    <p class="subtitle" id="gq-subtitle">Conoce el mundo, España y Euskadi</p>
+
+    <div class="gq-mode-cards">
+        <button class="gq-mode-card" onclick="GeoQuiz.goAtlas()">
+            <span class="icon">🗺️</span>
+            <h2 id="gq-atlas-label">Atlas</h2>
+            <p id="gq-atlas-desc">Explora toda la información</p>
+        </button>
+        <button class="gq-mode-card" onclick="GeoQuiz.goQuizSetup()">
+            <span class="icon">❓</span>
+            <h2 id="gq-quiz-label">Quiz</h2>
+            <p id="gq-quiz-desc">Responde preguntas y gana puntos</p>
+        </button>
+    </div>
+</div>
+
+<!-- ── ATLAS ─────────────────────────────────────────────────────── -->
+<div id="gq-atlas" class="gq-screen">
+    <div class="atlas-header">
+        <button class="back-btn" onclick="GeoQuiz.goHome()">← Volver</button>
+        <h2>Atlas</h2>
+        <input id="gq-search" type="search" placeholder="Buscar..." oninput="GeoQuiz.onSearch(this.value)">
+    </div>
+
+    <div id="atlas-top-tabs" class="gq-tabs"></div>
+    <div id="atlas-sub-tabs" class="gq-tabs"></div>
+    <div id="atlas-cards" class="gq-cards-grid"></div>
+</div>
+
+<!-- ── QUIZ SETUP ─────────────────────────────────────────────────── -->
+<div id="gq-quiz-setup" class="gq-screen">
+    <h2 id="gqs-title">Quiz</h2>
+    <p id="gqs-desc" style="color:var(--text-secondary);min-height:2em"></p>
+    <div id="gqs-levels-grid" class="gq-levels-grid"></div>
+    <div>
+        <button id="gqs-start" class="gq-start-btn" onclick="GeoQuiz.startQuiz()">Empezar</button>
+        <button id="gqs-back" class="gq-action-btn secondary" onclick="GeoQuiz.goHome()">← Volver</button>
+    </div>
+</div>
+
+<!-- ── QUIZ ───────────────────────────────────────────────────────── -->
+<div id="gq-quiz" class="gq-screen">
+    <div class="gq-quiz-topbar">
+        <span id="gq-q-index">Pregunta 1/10</span>
+        <strong id="gq-q-score">0 pts</strong>
+    </div>
+
+    <div class="gq-timer-bar-wrap" id="gq-timer-wrap" role="progressbar" aria-label="Tiempo restante" aria-valuemin="0" aria-valuemax="15" aria-valuenow="15">
+        <div id="gq-timer-bar" class="gq-timer-bar" style="width:100%"></div>
+    </div>
+
+    <div class="gq-question-card">
+        <p class="q-context" id="gq-q-context"></p>
+        <span class="q-icon" id="gq-q-icon">🌍</span>
+        <p class="q-text" id="gq-q-text">Pregunta...</p>
+    </div>
+
+    <div id="gq-options" class="gq-options"></div>
+    <p id="gq-feedback" class="gq-feedback" aria-live="polite" aria-atomic="true"></p>
+</div>
+
+<!-- ── RESULTS ────────────────────────────────────────────────────── -->
+<div id="gq-results" class="gq-screen" role="status" aria-live="polite">
+    <h2 id="gq-result-title">¡Resultados!</h2>
+    <div class="gq-stars">
+        <div id="gq-result-stars">⭐⭐⭐</div>
+        <p id="gq-result-stars-text" style="font-size:1rem;color:var(--text-secondary)"></p>
+    </div>
+
+    <div class="gq-score-circle">
+        <span class="pts" id="gq-result-pts">0</span>
+        <span class="pts-label">pts</span>
+    </div>
+
+    <div class="gq-result-stats">
+        <div class="gq-result-stat">
+            <div class="val" id="gq-result-correct">0/10</div>
+            <div class="lbl">Correctas</div>
+        </div>
+        <div class="gq-result-stat">
+            <div class="val" id="gq-result-time">0s</div>
+            <div class="lbl">Tiempo</div>
+        </div>
+    </div>
+
+    <div>
+        <button class="gq-action-btn" onclick="GeoQuiz.playAgain()">Repetir</button>
+        <button class="gq-action-btn secondary" onclick="GeoQuiz.goHome()">Inicio</button>
+    </div>
+</div>
+
+</main>
+
+<!-- Quit confirmation modal -->
+<div id="gq-quit-modal" class="gq-quit-modal hidden" role="dialog" aria-modal="true" aria-labelledby="gq-quit-title" tabindex="-1">
+    <div class="gq-quit-dialog">
+        <h3 id="gq-quit-title">¿Salir del quiz?</h3>
+        <p id="gq-quit-msg">Se perderá el progreso actual.</p>
+        <div class="gq-quit-actions">
+            <button class="gq-btn gq-btn-secondary" id="gq-quit-cancel">Cancelar</button>
+            <button class="gq-btn gq-btn-primary" id="gq-quit-ok">Salir</button>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
+<script src="../platform/firebase-config.js"></script>
+<script src="../platform/auth.js"></script>
+<script src="../platform/firestore.js"></script>
+<script src="../platform/i18n-platform.js"></script>
+<script src="../platform/achievements.js"></script>
+<script src="../platform/platform-header.js"></script>
+<script src="data.js"></script>
+<script src="game.js"></script>
+<script>
+    PlatformHeader.init({ gameName: 'GeoQuiz', gameIcon: '🗺️', rootPath: '../' });
+</script>
+    <script src="../platform/register-sw.js"></script>
+</body>
+</html>

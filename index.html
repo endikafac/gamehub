@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Games Hub – Aprende jugando. Juegos educativos de matemáticas para niños.">
+    <title>Games Hub</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Games Hub">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+    <!-- Platform styles first, then hub styles -->
+    <link rel="stylesheet" href="platform/platform.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ── Main content ──────────────────────────────────────── -->
+    <main id="main-content" tabindex="-1">
+
+        <!-- Hero -->
+        <section class="hub-hero" aria-labelledby="hub-title">
+            <div class="hub-hero-inner">
+                <h1 class="hub-hero-title" id="hub-title" data-i18n="hubTitle">
+                    Elige tu juego
+                </h1>
+                <p class="hub-hero-subtitle" data-i18n="hubSubtitle">
+                    Aprende matemáticas y más mientras te diviertes
+                </p>
+            </div>
+        </section>
+
+        <!-- Game cards -->
+        <section class="hub-games" aria-label="Games">
+            <div class="hub-games-grid">
+
+                <!-- MathMaster -->
+                <article class="game-card" aria-labelledby="card-mathmaster-title">
+                    <div class="game-card-icon" aria-hidden="true">🧮</div>
+                    <div class="game-card-body">
+                        <h2 class="game-card-title" id="card-mathmaster-title">MathMaster</h2>
+                        <p class="game-card-desc" data-i18n-game="mathmaster_desc">
+                            Sumas, restas, multiplicaciones y divisiones. ¡10 niveles de dificultad!
+                        </p>
+                        <div class="game-card-meta">
+                            <span class="game-tag">🧠 Matemáticas</span>
+                            <span class="game-tag">6-14 años</span>
+                        </div>
+                        <div class="game-card-score hidden" id="card-mathmaster-score">
+                            <span class="score-label" data-i18n="yourBest">Tu mejor</span>
+                            <span class="score-value" id="mathmaster-best-score">-</span>
+                        </div>
+                    </div>
+                    <a href="mathMaster-EFC/index.html"
+                       class="game-card-btn"
+                       aria-label="Jugar MathMaster"
+                       data-i18n-label="playNow">
+                        <span data-i18n="playNow">Jugar ahora</span>
+                        <span aria-hidden="true">→</span>
+                    </a>
+                </article>
+
+                <!-- Snake -->
+                <article class="game-card" aria-labelledby="card-snake-title">
+                    <div class="game-card-icon" aria-hidden="true">🐍</div>
+                    <div class="game-card-body">
+                        <h2 class="game-card-title" id="card-snake-title">Snake</h2>
+                        <p class="game-card-desc" data-i18n-game="snake_desc">
+                            El clásico juego de la serpiente con un toque educativo.
+                        </p>
+                        <div class="game-card-meta">
+                            <span class="game-tag">🎮 Reflejos</span>
+                            <span class="game-tag">6+ años</span>
+                        </div>
+                    </div>
+                    <a href="snake-EHS/index.html"
+                       class="game-card-btn"
+                       aria-label="Jugar Snake"
+                       data-i18n-label="playNow">
+                        <span data-i18n="playNow">Jugar ahora</span>
+                        <span aria-hidden="true">→</span>
+                    </a>
+                </article>
+
+                <!-- TableMaster -->
+                <article class="game-card" aria-labelledby="card-tablemaster-title">
+                    <div class="game-card-icon" aria-hidden="true">✖️</div>
+                    <div class="game-card-body">
+                        <h2 class="game-card-title" id="card-tablemaster-title">TableMaster</h2>
+                        <p class="game-card-desc" data-i18n-game="tablemaster_desc">
+                            Practica multiplicación y división por 1, 2, 3 y 4 cifras. ¡Con ayuda paso a paso!
+                        </p>
+                        <div class="game-card-meta">
+                            <span class="game-tag">🧮 Tablas</span>
+                            <span class="game-tag">7-14 años</span>
+                        </div>
+                    </div>
+                    <a href="tableMaster-EFC/index.html"
+                       class="game-card-btn"
+                       aria-label="Jugar TableMaster"
+                       data-i18n-label="playNow">
+                        <span data-i18n="playNow">Jugar ahora</span>
+                        <span aria-hidden="true">→</span>
+                    </a>
+                </article>
+
+                <!-- TypeMaster -->
+                <article class="game-card" aria-labelledby="card-typemaster-title">
+                    <div class="game-card-icon" aria-hidden="true">⌨️</div>
+                    <div class="game-card-body">
+                        <h2 class="game-card-title" id="card-typemaster-title">TypeMaster</h2>
+                        <p class="game-card-desc" data-i18n-game="typemaster_desc">
+                            Aprende mecanografía paso a paso. ¡Mide tu velocidad en PPM!
+                        </p>
+                        <div class="game-card-meta">
+                            <span class="game-tag">⌨️ Mecanografía</span>
+                            <span class="game-tag">8-16 años</span>
+                        </div>
+                    </div>
+                    <a href="typingMaster-EFC/index.html"
+                       class="game-card-btn"
+                       aria-label="Jugar TypeMaster">
+                        <span data-i18n="playNow">Jugar ahora</span>
+                        <span aria-hidden="true">→</span>
+                    </a>
+                </article>
+
+                <!-- WordSearch -->
+                <article class="game-card" aria-labelledby="card-wordsearch-title">
+                    <div class="game-card-icon" aria-hidden="true">🔍</div>
+                    <div class="game-card-body">
+                        <h2 class="game-card-title" id="card-wordsearch-title">WordSearch</h2>
+                        <p class="game-card-desc" data-i18n-game="wordsearch_desc">
+                            Encuentra palabras ocultas y aprende definiciones, sinónimos y antónimos.
+                        </p>
+                        <div class="game-card-meta">
+                            <span class="game-tag">🔍 Vocabulario</span>
+                            <span class="game-tag">8-14 años</span>
+                        </div>
+                    </div>
+                    <a href="wordSearch-EFC/index.html"
+                       class="game-card-btn"
+                       aria-label="Jugar WordSearch">
+                        <span data-i18n="playNow">Jugar ahora</span>
+                        <span aria-hidden="true">→</span>
+                    </a>
+                </article>
+
+                <!-- Crossword -->
+                <article class="game-card" aria-labelledby="card-crossword-title">
+                    <div class="game-card-icon" aria-hidden="true">✏️</div>
+                    <div class="game-card-body">
+                        <h2 class="game-card-title" id="card-crossword-title">Crucigrama</h2>
+                        <p class="game-card-desc" data-i18n-game="crossword_desc">
+                            Palabras cruzadas con geografía, ciencia, historia y más. ¡10 niveles!
+                        </p>
+                        <div class="game-card-meta">
+                            <span class="game-tag">✏️ Vocabulario</span>
+                            <span class="game-tag">9-16 años</span>
+                        </div>
+                    </div>
+                    <a href="crossword-EFC/index.html"
+                       class="game-card-btn"
+                       aria-label="Jugar Crucigrama">
+                        <span data-i18n="playNow">Jugar ahora</span>
+                        <span aria-hidden="true">→</span>
+                    </a>
+                </article>
+
+                <!-- GeoQuiz -->
+                <article class="game-card" aria-labelledby="card-geoquiz-title">
+                    <div class="game-card-icon" aria-hidden="true">🗺️</div>
+                    <div class="game-card-body">
+                        <h2 class="game-card-title" id="card-geoquiz-title">GeoQuiz</h2>
+                        <p class="game-card-desc" data-i18n-game="geoquiz_desc">
+                            Conoce países, capitales, ríos y montañas del mundo, España y Euskadi.
+                        </p>
+                        <div class="game-card-meta">
+                            <span class="game-tag">🗺️ Geografía</span>
+                            <span class="game-tag">8-16 años</span>
+                        </div>
+                    </div>
+                    <a href="geoQuiz-EFC/index.html"
+                       class="game-card-btn"
+                       aria-label="Jugar GeoQuiz">
+                        <span data-i18n="playNow">Jugar ahora</span>
+                        <span aria-hidden="true">→</span>
+                    </a>
+                </article>
+
+                <!-- Euskera: Nor-Nori-Nork -->
+                <article class="game-card" aria-labelledby="card-euskera-title">
+                    <div class="game-card-icon flag-icon">
+                        <!-- Ikurriña — Basque flag SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60" role="img" aria-label="Ikurriña">
+                            <rect width="90" height="60" fill="#CC0000"/>
+                            <line x1="0" y1="0" x2="90" y2="60" stroke="#007840" stroke-width="20"/>
+                            <line x1="90" y1="0" x2="0" y2="60" stroke="#007840" stroke-width="20"/>
+                            <rect x="38" y="0" width="14" height="60" fill="white"/>
+                            <rect x="0" y="23" width="90" height="14" fill="white"/>
+                        </svg>
+                    </div>
+                    <div class="game-card-body">
+                        <h2 class="game-card-title" id="card-euskera-title">Nor-Nori-Nork</h2>
+                        <p class="game-card-desc">
+                            Aprende el sistema de auxiliares del euskera. Teoría visual, vocabulario por temas y niveles progresivos.
+                        </p>
+                        <div class="game-card-meta">
+                            <span class="game-tag">Euskera</span>
+                            <span class="game-tag">7-16 años</span>
+                        </div>
+                    </div>
+                    <a href="euskera-EFC/index.html"
+                       class="game-card-btn"
+                       aria-label="Jugar Nor-Nori-Nork">
+                        <span data-i18n="playNow">Jugar ahora</span>
+                        <span aria-hidden="true">→</span>
+                    </a>
+                </article>
+
+                <!-- English: Irregular Verbs -->
+                <article class="game-card" aria-labelledby="card-english-title">
+                    <div class="game-card-icon flag-icon">
+                        <!-- Union Jack — UK flag SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40" role="img" aria-label="Bandera del Reino Unido">
+                            <rect width="60" height="40" fill="#012169"/>
+                            <!-- White diagonals (St Andrew + St Patrick combined) -->
+                            <line x1="0" y1="0" x2="60" y2="40" stroke="white" stroke-width="10"/>
+                            <line x1="60" y1="0" x2="0" y2="40" stroke="white" stroke-width="10"/>
+                            <!-- Red diagonals (St Patrick — offset) -->
+                            <line x1="0" y1="0" x2="60" y2="40" stroke="#C8102E" stroke-width="6"
+                                  stroke-dasharray="0 10 16 8 16 100" stroke-dashoffset="-3"/>
+                            <line x1="60" y1="0" x2="0" y2="40" stroke="#C8102E" stroke-width="6"
+                                  stroke-dasharray="0 10 16 8 16 100" stroke-dashoffset="-3"/>
+                            <!-- White cross (St George base) -->
+                            <rect x="25" y="0" width="10" height="40" fill="white"/>
+                            <rect x="0" y="15" width="60" height="10" fill="white"/>
+                            <!-- Red cross (St George) -->
+                            <rect x="27" y="0" width="6" height="40" fill="#C8102E"/>
+                            <rect x="0" y="17" width="60" height="6" fill="#C8102E"/>
+                        </svg>
+                    </div>
+                    <div class="game-card-body">
+                        <h2 class="game-card-title" id="card-english-title">Irregular Verbs</h2>
+                        <p class="game-card-desc">
+                            70+ verbos irregulares con audio. Aprende por grupos, practica por nivel y domina el inglés.
+                        </p>
+                        <div class="game-card-meta">
+                            <span class="game-tag">English</span>
+                            <span class="game-tag">8-16 años</span>
+                        </div>
+                    </div>
+                    <a href="englishVerbs-EFC/index.html"
+                       class="game-card-btn"
+                       aria-label="Jugar Irregular Verbs">
+                        <span data-i18n="playNow">Jugar ahora</span>
+                        <span aria-hidden="true">→</span>
+                    </a>
+                </article>
+            </div>
+        </section>
+
+        <!-- Sign-in prompt (shown when not authenticated) -->
+        <section class="hub-signin-prompt" id="hub-signin-prompt" aria-live="polite">
+            <div class="signin-prompt-content">
+                <span class="signin-prompt-icon" aria-hidden="true">🌟</span>
+                <div>
+                    <p class="signin-prompt-title" id="signin-prompt-title">
+                        Inicia sesión para guardar tu progreso
+                    </p>
+                    <p class="signin-prompt-sub" id="signin-prompt-sub">
+                        Tus puntos, logros y estadísticas se guardarán en la nube
+                    </p>
+                </div>
+                <button class="signin-prompt-btn" id="hub-signin-btn">
+                    Entrar con Google
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Firebase SDK (compat mode) -->
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
+
+    <!-- Platform modules -->
+    <script src="platform/firebase-config.js"></script>
+    <script src="platform/i18n-platform.js"></script>
+    <script src="platform/auth.js"></script>
+    <script src="platform/firestore.js"></script>
+    <script src="platform/platform-header.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Init platform header (no game-specific breadcrumb on hub)
+        PlatformHeader.init({ rootPath: './' });
+
+        const t = key => PlatformI18n.t(key);
+
+        // Game descriptions per language
+        const gameDescs = {
+            mathmaster_desc: {
+                'es-ES': 'Sumas, restas, multiplicaciones y divisiones. ¡10 niveles de dificultad!',
+                'en-US': 'Addition, subtraction, multiplication and division. 10 difficulty levels!',
+                'eu-ES': 'Batuketak, kenketak, biderketak eta zatiketak. 10 zailtasun maila!'
+            },
+            snake_desc: {
+                'es-ES': 'El clásico juego de la serpiente con un toque educativo.',
+                'en-US': 'The classic snake game with an educational twist.',
+                'eu-ES': 'Suge joko klasikoa ukitu hezigarriarekin.'
+            },
+            tablemaster_desc: {
+                'es-ES': 'Practica multiplicación y división por 1, 2, 3 y 4 cifras. ¡Con ayuda paso a paso!',
+                'en-US': 'Practice multiplication and division by 1, 2, 3 and 4 digits. With step-by-step help!',
+                'eu-ES': 'Praktikatu biderketa eta zatiketa 1, 2, 3 eta 4 zifrarekin. Urrats-urratseko laguntzarekin!'
+            },
+            typemaster_desc: {
+                'es-ES': 'Aprende mecanografía paso a paso. ¡Mide tu velocidad en PPM!',
+                'en-US': 'Learn touch typing step by step. Measure your speed in WPM!',
+                'eu-ES': 'Ikasi mekanografia pausoz pauso. Neurtu zure abiadura KPM!'
+            },
+            crossword_desc: {
+                'es-ES': 'Palabras cruzadas con geografía, ciencia, historia y más. ¡10 niveles!',
+                'en-US': 'Crossword puzzles with geography, science, history and more. 10 levels!',
+                'eu-ES': 'Hitz gurutzatuak geografia, zientzia, historia eta gehiagorekin. 10 maila!'
+            },
+            wordsearch_desc: {
+                'es-ES': 'Encuentra palabras ocultas y aprende definiciones, sinónimos y antónimos.',
+                'en-US': 'Find hidden words and learn definitions, synonyms and antonyms.',
+                'eu-ES': 'Aurkitu ezkutuko hitzak eta ikasi definizioak, sinonimoak eta antonimoak.'
+            },
+            geoquiz_desc: {
+                'es-ES': 'Conoce países, capitales, ríos y montañas del mundo, España y Euskadi.',
+                'en-US': 'Learn countries, capitals, rivers and mountains of the world, Spain and Euskadi.',
+                'eu-ES': 'Ezagutu munduko herriak, hiriburuak, ibaiak eta mendiak, Espainia eta Euskadi.'
+            }
+        };
+
+        function applyI18n() {
+            const lang = PlatformI18n.currentLanguage;
+            document.documentElement.lang = lang.split('-')[0];
+
+            // data-i18n elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.textContent = t(el.dataset.i18n);
+            });
+
+            // Game descriptions
+            document.querySelectorAll('[data-i18n-game]').forEach(el => {
+                const key = el.dataset.i18nGame;
+                el.textContent = gameDescs[key]?.[lang] ?? gameDescs[key]?.['es-ES'] ?? '';
+            });
+
+            // aria-labels with data-i18n-label
+            document.querySelectorAll('[data-i18n-label]').forEach(el => {
+                el.setAttribute('aria-label', t(el.dataset.i18nLabel) + ' ' + (el.closest('article')?.querySelector('.game-card-title')?.textContent || ''));
+            });
+
+            // Sign-in prompt
+            const prompts = {
+                'es-ES': { title: 'Inicia sesión para guardar tu progreso', sub: 'Tus puntos, logros y estadísticas se guardarán en la nube' },
+                'en-US': { title: 'Sign in to save your progress', sub: 'Your points, achievements and stats will be saved in the cloud' },
+                'eu-ES': { title: 'Hasi saioa zure aurerapena gordetzeko', sub: 'Zure puntuak, lorpenak eta estatistikak hodeian gordeko dira' }
+            };
+            const p = prompts[lang] || prompts['es-ES'];
+            const titleEl = document.getElementById('signin-prompt-title');
+            const subEl   = document.getElementById('signin-prompt-sub');
+            if (titleEl) titleEl.textContent = p.title;
+            if (subEl)   subEl.textContent   = p.sub;
+
+            const signinBtn = document.getElementById('hub-signin-btn');
+            if (signinBtn) signinBtn.textContent = t('signInWithGoogle');
+        }
+
+        applyI18n();
+        document.addEventListener('platformLanguageChanged', applyI18n);
+
+        // Auth state → show/hide sign-in prompt and user scores
+        if (typeof PlatformAuth !== 'undefined') {
+            PlatformAuth.onAuthStateChanged(async user => {
+                const prompt = document.getElementById('hub-signin-prompt');
+                if (user) {
+                    prompt?.classList.add('hidden');
+                    // Load MathMaster best score
+                    try {
+                        const stats = await PlatformFirestore.getGameStats(user.uid, 'mathmaster');
+                        const bestScoreEl = document.getElementById('mathmaster-best-score');
+                        const scoreCard   = document.getElementById('card-mathmaster-score');
+                        if (bestScoreEl && stats.totalGames > 0) {
+                            bestScoreEl.textContent = stats.totalPoints?.toLocaleString() ?? '-';
+                            scoreCard?.classList.remove('hidden');
+                        }
+                    } catch {}
+                } else {
+                    prompt?.classList.remove('hidden');
+                }
+            });
+        }
+
+        // Hub sign-in button
+        const signinBtnEl = document.getElementById('hub-signin-btn');
+        signinBtnEl?.addEventListener('click', async () => {
+            if (typeof PlatformAuth === 'undefined') return;
+            if (signinBtnEl.disabled) return;
+            signinBtnEl.disabled = true;
+            const originalText = signinBtnEl.innerHTML;
+            signinBtnEl.innerHTML = '<span aria-hidden="true">&#9203;</span> Conectando...';
+            try {
+                await PlatformAuth.signInWithGoogle();
+            } catch {
+                signinBtnEl.innerHTML = originalText;
+                signinBtnEl.disabled = false;
+                PlatformHeader.showToast(t('errorSignIn'), 'error');
+            }
+        });
+    });
+    </script>
+    <script src="platform/register-sw.js"></script>
+</body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MathMaster">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <meta name="description" content="MathMaster – Juego educativo de matemáticas. Sumas, restas, multiplicaciones y divisiones.">
+    <title>MathMaster – Games Hub</title>
+
+    <!-- Platform design system first -->
+    <link rel="stylesheet" href="../platform/platform.css">
+    <!-- Game-specific styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="main-content">
+
+    <!-- ==================== PANTALLA DE LOGIN ==================== -->
+    <div id="login-screen" class="screen active" role="main" aria-label="Inicio de sesión">
+        <div class="container">
+            <header class="game-header">
+                <h1 class="game-title" aria-label="MathMaster">
+                    <span class="math-symbol" aria-hidden="true">+</span>
+                    MathMaster
+                    <span class="math-symbol" aria-hidden="true">=</span>
+                </h1>
+                <p class="game-subtitle" data-i18n="appSubtitle">Desafío por Puntuación Fija</p>
+            </header>
+
+            <section class="login-section" aria-labelledby="login-heading">
+                <h2 class="section-title" id="login-heading" data-i18n="selectOrCreateProfile">
+                    Selecciona o crea tu perfil
+                </h2>
+
+                <!-- Existing user (Google) -->
+                <div class="users-list" id="users-list" aria-live="polite" aria-label="Usuarios guardados">
+                    <div id="users-loading" class="users-loading">
+                        <span class="users-loading-spinner" aria-hidden="true"></span>
+                        <span data-i18n="loading">Cargando...</span>
+                    </div>
+                </div>
+
+                <!-- Google Sign-In -->
+                <div class="new-user-form" id="google-signin-section">
+                    <button id="google-signin-btn" class="action-button google-btn" type="button">
+                        <svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="20" height="20">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        <span data-i18n="signInWithGoogle">Entrar con Google</span>
+                    </button>
+                </div>
+
+                <div class="guest-option">
+                    <button id="play-guest-btn" class="action-button secondary" type="button">
+                        <span class="btn-icon" aria-hidden="true">👤</span>
+                        <span data-i18n="playAsGuest">Jugar como Invitado</span>
+                    </button>
+                </div>
+            </section>
+
+            <footer class="game-footer">
+                <p data-i18n="developedBy">Games Hub | MathMaster v3.0</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- ==================== PANTALLA DE SELECCIÓN ==================== -->
+    <div id="selection-screen" class="screen">
+        <div class="container">
+            <header class="game-header">
+                <a href="../index.html" class="back-to-hub-btn" aria-label="Volver al Games Hub">
+                    ← <span data-i18n="backToHub">Games Hub</span>
+                </a>
+                <h1 class="game-title" aria-label="MathMaster">
+                    <span class="math-symbol" aria-hidden="true">+</span>
+                    MathMaster
+                    <span class="math-symbol" aria-hidden="true">=</span>
+                </h1>
+                <p class="game-subtitle" data-i18n="appSubtitle">Desafío por Puntuación Fija</p>
+            </header>
+
+            <!-- Selección de Operación -->
+            <section class="selection-section" aria-labelledby="op-heading">
+                <h2 class="section-title" id="op-heading" data-i18n="chooseOperation">Elige la Operación</h2>
+                <div class="operation-buttons" role="group" aria-labelledby="op-heading">
+                    <button class="operation-btn" data-operation="suma" aria-label="Suma">
+                        <span class="op-symbol" aria-hidden="true">+</span>
+                        <span class="op-name" data-i18n="operations.suma">Suma</span>
+                    </button>
+                    <button class="operation-btn" data-operation="resta" aria-label="Resta">
+                        <span class="op-symbol" aria-hidden="true">−</span>
+                        <span class="op-name" data-i18n="operations.resta">Resta</span>
+                    </button>
+                    <button class="operation-btn" data-operation="multiplicacion" aria-label="Multiplicación">
+                        <span class="op-symbol" aria-hidden="true">×</span>
+                        <span class="op-name" data-i18n="operations.multiplicacion">Multiplicación</span>
+                    </button>
+                    <button class="operation-btn" data-operation="division" aria-label="División">
+                        <span class="op-symbol" aria-hidden="true">÷</span>
+                        <span class="op-name" data-i18n="operations.division">División</span>
+                    </button>
+                    <button class="operation-btn" data-operation="tablas" aria-label="Tablas de multiplicar">
+                        <span class="op-symbol" aria-hidden="true">T</span>
+                        <span class="op-name" data-i18n="operations.tablas">Tablas</span>
+                    </button>
+                    <button class="operation-btn" data-operation="mezcla" aria-label="Mezcla de operaciones">
+                        <span class="op-symbol" aria-hidden="true">±</span>
+                        <span class="op-name" data-i18n="operations.mezcla">Mezcla</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Nivel de dificultad -->
+            <section class="selection-section" id="level-section" aria-labelledby="level-heading">
+                <h2 class="section-title" id="level-heading" data-i18n="difficultyLevel">Nivel de Dificultad</h2>
+                <div class="level-buttons" role="group" aria-labelledby="level-heading">
+                    <button class="level-btn" data-level="1" aria-label="Nivel 1">1</button>
+                    <button class="level-btn" data-level="2" aria-label="Nivel 2">2</button>
+                    <button class="level-btn" data-level="3" aria-label="Nivel 3">3</button>
+                    <button class="level-btn" data-level="4" aria-label="Nivel 4">4</button>
+                    <button class="level-btn" data-level="5" aria-label="Nivel 5">5</button>
+                    <button class="level-btn" data-level="6" aria-label="Nivel 6">6</button>
+                    <button class="level-btn" data-level="7" aria-label="Nivel 7">7</button>
+                    <button class="level-btn" data-level="8" aria-label="Nivel 8">8</button>
+                    <button class="level-btn" data-level="9" aria-label="Nivel 9">9</button>
+                    <button class="level-btn" data-level="10" aria-label="Nivel 10">10</button>
+                </div>
+                <p id="level-description" class="level-description" role="status" data-i18n="selectLevelDescription">
+                    Selecciona un nivel para ver su descripción
+                </p>
+            </section>
+
+            <!-- Tablas -->
+            <section class="selection-section hidden" id="table-section" aria-labelledby="table-heading">
+                <h2 class="section-title" id="table-heading" data-i18n="tableOf">Tabla del...</h2>
+                <div class="table-buttons" role="group" aria-labelledby="table-heading">
+                    <button class="table-btn" data-table="1">1</button>
+                    <button class="table-btn" data-table="2">2</button>
+                    <button class="table-btn" data-table="3">3</button>
+                    <button class="table-btn" data-table="4">4</button>
+                    <button class="table-btn" data-table="5">5</button>
+                    <button class="table-btn" data-table="6">6</button>
+                    <button class="table-btn" data-table="7">7</button>
+                    <button class="table-btn" data-table="8">8</button>
+                    <button class="table-btn" data-table="9">9</button>
+                    <button class="table-btn" data-table="10">10</button>
+                    <button class="table-btn table-todas" data-table="todas" data-i18n="allTables">Todas</button>
+                </div>
+            </section>
+
+            <!-- Cantidad de preguntas -->
+            <section class="selection-section" aria-labelledby="questions-heading">
+                <h2 class="section-title" id="questions-heading" data-i18n="questionCount">Cantidad de Preguntas</h2>
+                <div class="questions-buttons" role="group" aria-labelledby="questions-heading">
+                    <button class="questions-btn" data-questions="20" aria-label="20 preguntas">20</button>
+                    <button class="questions-btn selected" data-questions="30" aria-label="30 preguntas" aria-pressed="true">30</button>
+                    <button class="questions-btn" data-questions="40" aria-label="40 preguntas">40</button>
+                </div>
+            </section>
+
+            <button id="start-btn" class="start-button" disabled aria-disabled="true">
+                <span class="btn-icon" aria-hidden="true">🎮</span>
+                <span class="btn-text" data-i18n="start">¡EMPEZAR!</span>
+            </button>
+
+            <div class="quick-access">
+                <button id="stats-btn" class="quick-btn" aria-label="Ver estadísticas">
+                    <span aria-hidden="true">📊</span>
+                    <span data-i18n="statistics">Estadísticas</span>
+                </button>
+                <button id="achievements-btn" class="quick-btn" aria-label="Ver logros">
+                    <span aria-hidden="true">🏆</span>
+                    <span data-i18n="achievements">Logros</span>
+                </button>
+            </div>
+
+            <footer class="game-footer">
+                <p data-i18n="developedBy">Games Hub | MathMaster v3.0</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- ==================== PANTALLA DE JUEGO ==================== -->
+    <div id="game-screen" class="screen" role="main">
+        <div class="container game-container">
+            <div class="operation-indicator" id="operation-indicator" aria-live="polite">Suma – Nivel 1</div>
+
+            <header class="game-stats" role="region" aria-label="Estado del juego">
+                <div class="stat-item">
+                    <span class="stat-label" data-i18n="time">Tiempo</span>
+                    <span class="stat-value timer" id="timer" aria-live="off">00:00</span>
+                </div>
+                <div class="stat-item score-item">
+                    <span class="stat-label" data-i18n="score">Puntuación</span>
+                    <span class="stat-value" id="score" aria-live="polite">0 / 30</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label" data-i18n="streak">Racha</span>
+                    <span class="stat-value streak" id="streak" aria-live="polite">🔥 0</span>
+                </div>
+            </header>
+
+            <div class="progress-container" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+
+            <main class="question-area" aria-live="polite" aria-atomic="false">
+                <div class="question-box">
+                    <span class="question-text" id="question-text" aria-label="Pregunta">5 + 3 = ?</span>
+                    <button id="speak-question-btn" class="speak-btn hidden"
+                            aria-label="Leer pregunta en voz alta" data-i18n-aria="readQuestion">
+                        🔊
+                    </button>
+                </div>
+
+                <div class="answer-area">
+                    <label for="answer-input" class="sr-only" data-i18n="yourAnswer">Tu respuesta</label>
+                    <input
+                        type="text"
+                        id="answer-input"
+                        class="answer-input"
+                        placeholder="Tu respuesta"
+                        data-i18n-placeholder="yourAnswer"
+                        autocomplete="off"
+                        inputmode="decimal"
+                        aria-required="true"
+                        aria-describedby="feedback-text hint-text"
+                    >
+                    <button id="submit-btn" class="submit-button" data-i18n="verify" type="button">
+                        Verificar
+                    </button>
+                </div>
+
+                <div class="feedback-container" id="feedback-container" aria-live="assertive" aria-atomic="true">
+                    <span class="feedback-text" id="feedback-text" role="status"></span>
+                    <span class="hint-text"     id="hint-text"     role="note"></span>
+                </div>
+            </main>
+
+            <!-- Teclado numérico -->
+            <div class="numpad" id="numpad" role="group" aria-label="Teclado numérico">
+                <button class="numpad-btn" data-value="7" type="button">7</button>
+                <button class="numpad-btn" data-value="8" type="button">8</button>
+                <button class="numpad-btn" data-value="9" type="button">9</button>
+                <button class="numpad-btn" data-value="4" type="button">4</button>
+                <button class="numpad-btn" data-value="5" type="button">5</button>
+                <button class="numpad-btn" data-value="6" type="button">6</button>
+                <button class="numpad-btn" data-value="1" type="button">1</button>
+                <button class="numpad-btn" data-value="2" type="button">2</button>
+                <button class="numpad-btn" data-value="3" type="button">3</button>
+                <button class="numpad-btn negative-btn" data-value="-" type="button" aria-label="Negativo">−</button>
+                <button class="numpad-btn" data-value="0" type="button">0</button>
+                <button class="numpad-btn" data-value="." type="button" aria-label="Decimal">.</button>
+                <button class="numpad-btn delete-btn" data-value="delete" type="button" aria-label="Borrar">⌫</button>
+                <button class="numpad-btn clear-btn"  data-value="clear"  type="button" aria-label="Limpiar">C</button>
+                <button class="numpad-btn enter-btn"  data-value="enter"  type="button" aria-label="Confirmar">✓</button>
+            </div>
+
+            <div class="game-controls">
+                <button id="pause-btn" class="control-btn" type="button">
+                    <span aria-hidden="true">⏸️</span> <span data-i18n="pause">Pausar</span>
+                </button>
+                <button id="quit-btn" class="control-btn quit" type="button">
+                    <span aria-hidden="true">🚪</span> <span data-i18n="exit">Salir</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PAUSA ==================== -->
+    <div id="pause-overlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+        <div class="overlay-content">
+            <h2 id="pause-title"><span aria-hidden="true">⏸️</span> <span data-i18n="gamePaused">Juego Pausado</span></h2>
+            <p class="pause-stats">
+                <span data-i18n="answers">Respuestas</span>: <span id="pause-score">0</span> |
+                <span data-i18n="time">Tiempo</span>: <span id="pause-time">00:00</span>
+            </p>
+            <button id="resume-btn"    class="action-button primary"    type="button"><span aria-hidden="true">▶️</span> <span data-i18n="continue">Continuar</span></button>
+            <button id="restart-btn"   class="action-button secondary"  type="button"><span aria-hidden="true">🔄</span> <span data-i18n="restart">Reiniciar</span></button>
+            <button id="pause-quit-btn" class="action-button secondary" type="button"><span aria-hidden="true">🏠</span> <span data-i18n="mainMenu">Menú Principal</span></button>
+        </div>
+    </div>
+
+    <!-- ==================== RESULTADOS ==================== -->
+    <div id="results-screen" class="screen" role="main" aria-labelledby="results-title">
+        <div class="container results-container">
+            <header class="results-header">
+                <h2 class="results-title" id="results-title">¡Felicitaciones!</h2>
+                <div class="results-emoji" id="results-emoji" aria-hidden="true">🏆</div>
+            </header>
+
+            <!-- Points earned (NEW) -->
+            <div class="results-points-row hidden" id="results-points-row" aria-live="polite">
+                <div class="points-earned" id="results-points-badge" aria-label="Puntos ganados"></div>
+                <div class="xp-earned"     id="results-xp-badge"     aria-label="XP ganado"></div>
+            </div>
+
+            <div class="results-stats">
+                <div class="result-stat main-stat">
+                    <span class="result-label" data-i18n="correctAnswers">Respuestas Correctas</span>
+                    <span class="result-value" id="final-score">30 / 30</span>
+                </div>
+                <div class="result-stat">
+                    <span class="result-label" data-i18n="totalTime">Tiempo Total</span>
+                    <span class="result-value" id="total-time">05:30</span>
+                </div>
+                <div class="result-stat">
+                    <span class="result-label" data-i18n="bestStreak">Mejor Racha</span>
+                    <span class="result-value" id="best-streak">15</span>
+                </div>
+                <div class="result-stat">
+                    <span class="result-label" data-i18n="precision">Precisión</span>
+                    <span class="result-value" id="accuracy">100%</span>
+                </div>
+                <div class="result-stat">
+                    <span class="result-label" data-i18n="totalAttempts">Intentos Totales</span>
+                    <span class="result-value" id="total-attempts">30</span>
+                </div>
+                <div class="result-stat">
+                    <span class="result-label" data-i18n="avgPerQuestion">Promedio por Pregunta</span>
+                    <span class="result-value" id="avg-time">11s</span>
+                </div>
+            </div>
+
+            <div class="record-section hidden" id="record-section">
+                <span class="record-badge"><span aria-hidden="true">🌟</span> <span data-i18n="newTimeRecord">¡Nuevo Récord de Tiempo!</span></span>
+            </div>
+
+            <div class="unlocked-achievements hidden" id="unlocked-achievements" aria-live="polite">
+                <h3><span aria-hidden="true">🏆</span> <span data-i18n="achievementsUnlocked">Logros Desbloqueados</span></h3>
+                <div class="achievements-list" id="results-achievements-list"></div>
+            </div>
+
+            <div class="results-actions">
+                <button id="retry-btn" class="action-button primary" type="button">
+                    <span class="btn-icon" aria-hidden="true">🔄</span>
+                    <span data-i18n="playAgain">Jugar de Nuevo</span>
+                </button>
+                <button id="menu-btn" class="action-button secondary" type="button">
+                    <span class="btn-icon" aria-hidden="true">🏠</span>
+                    <span data-i18n="mainMenu">Menú Principal</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ESTADÍSTICAS ==================== -->
+    <div id="stats-screen" class="screen" role="main" aria-labelledby="stats-heading">
+        <div class="container">
+            <header class="screen-header">
+                <button class="back-btn" id="stats-back-btn" type="button">← <span data-i18n="back">Volver</span></button>
+                <h2 id="stats-heading"><span aria-hidden="true">📊</span> <span data-i18n="statistics">Estadísticas</span></h2>
+            </header>
+            <div class="stats-content" id="stats-content">
+                <section class="stats-section" aria-labelledby="stats-summary-heading">
+                    <h3 id="stats-summary-heading" data-i18n="generalSummary">Resumen General</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card"><span class="stat-card-value" id="stat-total-games">0</span><span class="stat-card-label" data-i18n="gamesPlayed">Partidas Jugadas</span></div>
+                        <div class="stat-card"><span class="stat-card-value" id="stat-total-correct">0</span><span class="stat-card-label" data-i18n="correctAnswersTotal">Respuestas Correctas</span></div>
+                        <div class="stat-card"><span class="stat-card-value" id="stat-accuracy">0%</span><span class="stat-card-label" data-i18n="globalPrecision">Precisión Global</span></div>
+                        <div class="stat-card"><span class="stat-card-value" id="stat-best-streak">0</span><span class="stat-card-label" data-i18n="bestStreak">Mejor Racha</span></div>
+                        <div class="stat-card"><span class="stat-card-value" id="stat-total-time">0h 0m</span><span class="stat-card-label" data-i18n="totalTimeSpent">Tiempo Total</span></div>
+                    </div>
+                </section>
+                <section class="stats-section" aria-labelledby="stats-op-heading">
+                    <h3 id="stats-op-heading" data-i18n="byOperation">Por Operación</h3>
+                    <div class="operation-stats" id="operation-stats"></div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== LOGROS ==================== -->
+    <div id="achievements-screen" class="screen" role="main" aria-labelledby="achievements-heading">
+        <div class="container">
+            <header class="screen-header">
+                <button class="back-btn" id="achievements-back-btn" type="button">← <span data-i18n="back">Volver</span></button>
+                <h2 id="achievements-heading"><span aria-hidden="true">🏆</span> <span data-i18n="achievements">Logros</span></h2>
+            </header>
+            <div class="achievements-content" id="achievements-content" aria-live="polite"></div>
+        </div>
+    </div>
+
+    <!-- ==================== PERFIL ==================== -->
+    <div id="profile-screen" class="screen" role="main" aria-labelledby="profile-heading">
+        <div class="container">
+            <header class="screen-header">
+                <button class="back-btn" id="profile-back-btn" type="button">← <span data-i18n="back">Volver</span></button>
+                <h2 id="profile-heading"><span aria-hidden="true">👤</span> <span data-i18n="myProfile">Mi Perfil</span></h2>
+            </header>
+            <div class="profile-content" id="profile-content">
+                <section class="profile-section profile-header-section">
+                    <div class="profile-avatar" id="profile-avatar-img">👤</div>
+                    <div class="profile-info">
+                        <h3 class="profile-username" id="profile-username">Usuario</h3>
+                        <div class="profile-meta">
+                            <span class="profile-meta-item">📅 <span data-i18n="created">Creado</span>: <span id="profile-created">-</span></span>
+                            <span class="profile-meta-item">🕐 <span data-i18n="lastActivity">Última actividad</span>: <span id="profile-last-login">-</span></span>
+                        </div>
+                        <!-- XP / Level bar -->
+                        <div class="profile-xp-section">
+                            <div class="profile-level-badge" id="profile-level-badge">Lv. 0</div>
+                            <div class="profile-xp-bar-wrap">
+                                <div class="profile-xp-bar" id="profile-xp-bar" style="width:0%"></div>
+                            </div>
+                            <span class="profile-xp-text" id="profile-xp-text">0 XP</span>
+                        </div>
+                    </div>
+                </section>
+                <section class="profile-section" aria-labelledby="profile-stats-heading">
+                    <h3 id="profile-stats-heading" data-i18n="quickStats">Resumen Rápido</h3>
+                    <div class="profile-stats-grid">
+                        <div class="profile-stat-card"><span class="profile-stat-value" id="profile-total-games">0</span><span class="profile-stat-label" data-i18n="gamesPlayed">Partidas</span></div>
+                        <div class="profile-stat-card"><span class="profile-stat-value" id="profile-accuracy">0%</span><span class="profile-stat-label" data-i18n="globalPrecision">Precisión</span></div>
+                        <div class="profile-stat-card"><span class="profile-stat-value" id="profile-best-streak">0</span><span class="profile-stat-label" data-i18n="bestStreak">Racha</span></div>
+                        <div class="profile-stat-card"><span class="profile-stat-value" id="profile-achievements">0/0</span><span class="profile-stat-label" data-i18n="achievements">Logros</span></div>
+                    </div>
+                </section>
+                <section class="profile-section profile-actions">
+                    <button class="btn btn-outline" id="profile-view-stats"        type="button">📊 <span data-i18n="viewAllStats">Ver Estadísticas Completas</span></button>
+                    <button class="btn btn-outline" id="profile-view-achievements" type="button">🏆 <span data-i18n="viewAllAchievements">Ver Todos los Logros</span></button>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL DE CONFIGURACIÓN ==================== -->
+    <div id="settings-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2 id="settings-title"><span aria-hidden="true">⚙️</span> <span data-i18n="settings">Configuración</span></h2>
+                <button class="close-modal-btn" id="close-settings-btn" type="button"
+                        aria-label="Cerrar configuración" data-i18n-aria="close">✕</button>
+            </header>
+            <div class="settings-content">
+                <!-- Audio -->
+                <section class="settings-section" aria-labelledby="settings-audio-heading">
+                    <h3 id="settings-audio-heading" data-i18n="audio">🔊 Audio</h3>
+                    <div class="setting-item">
+                        <label class="setting-label" for="setting-sound">
+                            <span data-i18n="soundEffects">Efectos de Sonido</span>
+                            <span class="setting-description" data-i18n="soundEffectsDesc">Sonidos para aciertos, errores y logros</span>
+                        </label>
+                        <label class="toggle-switch" aria-label="Activar efectos de sonido">
+                            <input type="checkbox" id="setting-sound" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label" for="setting-volume">
+                            <span data-i18n="volume">Volumen</span>
+                        </label>
+                        <input type="range" id="setting-volume" min="0" max="100" value="80"
+                               class="volume-slider" aria-label="Nivel de volumen">
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label" for="setting-tts">
+                            <span data-i18n="textToSpeech">Lectura en Voz Alta (TTS)</span>
+                            <span class="setting-description" data-i18n="textToSpeechDesc">Lee las preguntas y resultados</span>
+                        </label>
+                        <label class="toggle-switch" aria-label="Activar lectura en voz alta">
+                            <input type="checkbox" id="setting-tts">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </section>
+                <!-- Accesibilidad -->
+                <section class="settings-section" aria-labelledby="settings-a11y-heading">
+                    <h3 id="settings-a11y-heading" data-i18n="accessibility">♿ Accesibilidad</h3>
+                    <div class="setting-item">
+                        <label class="setting-label" for="setting-high-contrast">
+                            <span data-i18n="highContrastMode">Modo Alto Contraste</span>
+                            <span class="setting-description" data-i18n="highContrastDesc">Mejora la visibilidad</span>
+                        </label>
+                        <label class="toggle-switch" aria-label="Activar alto contraste">
+                            <input type="checkbox" id="setting-high-contrast">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </section>
+                <!-- Idioma -->
+                <section class="settings-section" aria-labelledby="settings-lang-heading">
+                    <h3 id="settings-lang-heading" data-i18n="language">🌐 Idioma</h3>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <span data-i18n="language">Idioma</span>
+                            <span class="setting-description" data-i18n="languageDesc">Selecciona el idioma de la interfaz</span>
+                        </label>
+                        <div class="language-selector" id="language-selector" role="group" aria-label="Selección de idioma">
+                            <button class="lang-btn" data-lang="es-ES" title="Castellano" type="button"><span class="lang-flag" aria-hidden="true">🇪🇸</span><span class="lang-name">ES</span></button>
+                            <button class="lang-btn" data-lang="en-US" title="English"    type="button"><span class="lang-flag" aria-hidden="true">🇺🇸</span><span class="lang-name">EN</span></button>
+                            <button class="lang-btn" data-lang="eu-ES" title="Euskara"    type="button"><span class="lang-flag" aria-hidden="true">🏴</span><span class="lang-name">EU</span></button>
+                        </div>
+                    </div>
+                </section>
+                <!-- Cuenta -->
+                <section class="settings-section" id="account-settings" aria-labelledby="settings-account-heading">
+                    <h3 id="settings-account-heading" data-i18n="account">👤 Cuenta</h3>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <span data-i18n="currentUser">Usuario Actual</span>
+                            <span class="setting-description" id="settings-current-user" data-i18n="guest">Invitado</span>
+                        </label>
+                        <button class="setting-btn" id="change-user-btn" type="button" data-i18n="change">Cambiar</button>
+                    </div>
+                    <div class="setting-item danger-zone hidden" id="delete-account-section">
+                        <label class="setting-label">
+                            <span data-i18n="deleteAccount">Eliminar Cuenta</span>
+                            <span class="setting-description" data-i18n="deleteAccountDesc">Esta acción no se puede deshacer</span>
+                        </label>
+                        <button class="setting-btn danger" id="delete-account-btn" type="button" data-i18n="delete">Eliminar</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL DE CONFIRMACIÓN ==================== -->
+    <div id="confirm-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+        <div class="modal-content modal-small">
+            <h3 id="confirm-title" data-i18n="areYouSure">¿Estás seguro?</h3>
+            <p id="confirm-message" data-i18n="actionCannotBeUndone">Esta acción no se puede deshacer.</p>
+            <div class="modal-actions">
+                <button class="action-button secondary" id="confirm-cancel-btn" type="button" data-i18n="cancel">Cancelar</button>
+                <button class="action-button danger"    id="confirm-ok-btn"     type="button" data-i18n="confirm">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MENÚ DE USUARIO ==================== -->
+    <div id="user-menu" class="dropdown-menu hidden" role="menu" aria-label="Menú de usuario">
+        <button class="menu-item" id="menu-profile"      role="menuitem" type="button"><span aria-hidden="true">👤</span> <span data-i18n="myProfile">Mi Perfil</span></button>
+        <button class="menu-item" id="menu-stats"        role="menuitem" type="button"><span aria-hidden="true">📊</span> <span data-i18n="statistics">Estadísticas</span></button>
+        <button class="menu-item" id="menu-achievements" role="menuitem" type="button"><span aria-hidden="true">🏆</span> <span data-i18n="achievements">Logros</span></button>
+        <hr class="menu-divider" role="separator">
+        <button class="menu-item" id="menu-logout"       role="menuitem" type="button"><span aria-hidden="true">🚪</span> <span data-i18n="logout">Cerrar Sesión</span></button>
+    </div>
+
+    <!-- ==================== TOP BAR (badge + theme – hidden, replaced by platform header) ==================== -->
+    <div class="top-bar" id="top-bar-game" style="display:none">
+        <div class="user-badge hidden" id="user-badge">
+            <span class="user-avatar" id="user-avatar-badge">👤</span>
+            <span class="user-name" id="current-user-name">Jugador</span>
+            <button class="user-menu-btn" id="user-menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Menú de usuario">▼</button>
+        </div>
+        <div class="top-controls">
+            <button id="settings-btn" class="icon-btn" type="button" aria-label="Configuración">⚙️</button>
+            <button id="theme-toggle" class="icon-btn" type="button" aria-label="Cambiar tema">
+                <span class="theme-icon theme-icon-dark" aria-hidden="true">🌙</span>
+                <span class="theme-icon theme-icon-light" aria-hidden="true">☀️</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== NOTIFICACIONES ==================== -->
+    <div id="notifications-container" class="notifications-container" aria-live="polite" aria-atomic="false"></div>
+
+</div><!-- #main-content -->
+
+    <!-- ============================================================
+         SCRIPTS
+         Order matters: Firebase → Platform → Game modules → Game logic
+    ============================================================ -->
+
+    <!-- Firebase SDK (compat) -->
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
+
+    <!-- Platform modules -->
+    <script src="../platform/firebase-config.js"></script>
+    <script src="../platform/i18n-platform.js"></script>
+    <script src="../platform/auth.js"></script>
+    <script src="../platform/firestore.js"></script>
+    <script src="../platform/platform-header.js"></script>
+
+    <!-- Game modules -->
+    <script src="storage.js"></script>
+    <script src="audio.js"></script>
+    <script src="i18n.js"></script>
+    <script src="achievements.js"></script>
+    <script src="game.js"></script>
+
+    <script>
+    // Init platform header for this game page
+    document.addEventListener('DOMContentLoaded', () => {
+        PlatformHeader.init({
+            gameName: 'MathMaster',
+            gameIcon: '🧮',
+            rootPath: '../'
+        });
+    });
+    </script>
+    <script src="../platform/register-sw.js"></script>
+</body>
+</html>
