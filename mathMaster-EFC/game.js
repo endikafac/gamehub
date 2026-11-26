@@ -359,15 +359,15 @@ async function init() {
     });
 
     // --- Firebase auth state ---
-    // Auth is handled by the platform header. Games always start (as guest if not signed in).
     if (typeof PlatformAuth !== 'undefined') {
         PlatformAuth.onAuthStateChanged(async user => {
             if (user) {
-                // User signed in → load profile and go to selection
+                // User signed in → load profile and skip login screen
                 await loginUser(user.uid);
             } else {
-                // Not signed in → play as guest directly, no login screen required
-                playAsGuest();
+                // Not signed in → show login screen so user can sign in or play as guest
+                refreshUsersList();
+                showScreen('login');
             }
         });
     } else {
