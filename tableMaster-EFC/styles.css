@@ -2197,3 +2197,8 @@
 .tm-action-btn { padding: 10px 20px; border-radius: var(--radius-md, 12px); font-weight: 600; cursor: pointer; min-height: 44px; border: 2px solid transparent; font-size: 0.9rem; }
 .tm-primary { background: var(--hub-brand-color); color: #fff; border-color: var(--hub-brand-color); }
 .tm-secondary { background: var(--bg-surface); color: var(--text-primary); border-color: var(--border-color); }
+
+/* Larger touch targets for digit boxes on phones/tablets */
+@media (pointer: coarse) {
+    :root { --digit-size: 3rem; --digit-size-sm: 2.2rem; }
+}

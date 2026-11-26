@@ -116,79 +116,83 @@ function cwFindCandidates(grid, entry, placed, N) {
  * Returns { grid, placed } or null if failed.
  * placed[i] = { entry, r0, c0, dir, word, number }
  */
-function cwBuild(wordPool, N, targetWords, maxAttempts) {
+function cwBuild(wordPool, N, targetWords, maxAttempts, recent) {
     if (maxAttempts === undefined) maxAttempts = 30;
+    recent = recent || new Set();
+    const pick = function(arr) { return arr[Math.floor(Math.random() * arr.length)]; };
+    let best = null;
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
         const grid = Array.from({ length: N }, () => Array(N).fill(null));
         const placed = [];
 
-        // Shuffle and sort by length descending (try longest first for better coverage)
+        // Randomised order: longer words tend to go first, but with heavy jitter,
+        // and words seen in recent games are pushed back so puzzles keep changing.
         const shuffled = wordPool
-            .slice()
-            .sort(function() { return Math.random() - 0.5; })
-            .sort(function(a, b) { return b.word.length - a.word.length; });
+            .map(function(e) { return { e: e, k: e.word.length + Math.random() * 5 - (recent.has(e.word) ? 6 : 0) }; })
+            .sort(function(a, b) { return b.k - a.k; })
+            .map(function(o) { return o.e; });
 
-        // Place first word horizontally in center
-        const first = shuffled[0];
-        if (!first || first.word.length > N) continue;
+        const first = shuffled.find(function(e) { return e.word.length <= N; });
+        if (!first) continue;
+        shuffled.splice(shuffled.indexOf(first), 1);
 
-        const r0 = Math.floor(N / 2);
-        const c0 = Math.floor((N - first.word.length) / 2);
+        // First word: random row near the centre, random horizontal offset
+        const r0 = Math.floor(N / 2) + Math.floor(Math.random() * 3) - 1;
+        const slack = N - first.word.length;
+        const c0 = Math.max(0, Math.min(slack, Math.floor(slack / 2) + (slack > 1 ? Math.floor(Math.random() * 3) - 1 : 0)));
         cwPlace(grid, r0, c0, 'ACROSS', first.word);
         placed.push({ entry: first, r0, c0, dir: 'ACROSS', word: first.word });
 
-        // Try to place remaining words
-        for (let i = 1; i < shuffled.length && placed.length < targetWords; i++) {
+        for (let i = 0; i < shuffled.length && placed.length < targetWords; i++) {
             const entry = shuffled[i];
             const candidates = cwFindCandidates(grid, entry, placed, N);
             if (candidates.length === 0) continue;
 
-            // Pick best: most intersections, then closest to grid center
-            const halfN = N / 2;
-            candidates.sort(function(a, b) {
-                if (b.intersections !== a.intersections) return b.intersections - a.intersections;
-                const distA = Math.abs(a.r - halfN) + Math.abs(a.c - halfN);
-                const distB = Math.abs(b.r - halfN) + Math.abs(b.c - halfN);
-                return distA - distB;
-            });
-
-            const best = candidates[0];
-            cwPlace(grid, best.r, best.c, best.dir, entry.word);
-            placed.push({ entry, r0: best.r, c0: best.c, dir: best.dir, word: entry.word });
+            // Pick randomly among the placements with the most crossings
+            let maxInter = 0;
+            candidates.forEach(function(c) { if (c.intersections > maxInter) maxInter = c.intersections; });
+            const top = candidates.filter(function(c) { return c.intersections === maxInter; });
+            const chosen = pick(top);
+            cwPlace(grid, chosen.r, chosen.c, chosen.dir, entry.word);
+            placed.push({ entry, r0: chosen.r, c0: chosen.c, dir: chosen.dir, word: entry.word });
         }
 
-        // Accept if we placed at least min(targetWords, 5) words
-        if (placed.length >= Math.min(targetWords, 5)) {
-            // Assign numbers in reading order (top-to-bottom, left-to-right)
-            const posToNum = {};
-            const seen = new Set();
-            const unique = [];
-
-            for (const p of placed) {
-                const k = p.r0 + ',' + p.c0;
-                if (!seen.has(k)) {
-                    seen.add(k);
-                    unique.push({ r: p.r0, c: p.c0 });
-                }
-            }
-
-            unique.sort(function(a, b) {
-                if (a.r !== b.r) return a.r - b.r;
-                return a.c - b.c;
-            });
-
-            unique.forEach(function(pos, idx) {
-                posToNum[pos.r + ',' + pos.c] = idx + 1;
-            });
-
-            placed.forEach(function(p) {
-                p.number = posToNum[p.r0 + ',' + p.c0];
-            });
-
-            return { grid, placed };
-        }
+        if (!best || placed.length > best.placed.length) best = { grid, placed };
+        if (placed.length >= targetWords) break;
     }
 
-    return null;
+    if (!best || best.placed.length < Math.min(targetWords, 5)) return null;
+    cwNumber(best.placed);
+    return best;
+}
+
+/** Assigns clue numbers in reading order (top-to-bottom, left-to-right). */
+function cwNumber(placed) {
+    const seen = new Set();
+    const unique = [];
+    for (const p of placed) {
+        const k = p.r0 + ',' + p.c0;
+        if (!seen.has(k)) { seen.add(k); unique.push({ r: p.r0, c: p.c0 }); }
+    }
+    unique.sort(function(a, b) { return a.r !== b.r ? a.r - b.r : a.c - b.c; });
+    const posToNum = {};
+    unique.forEach(function(pos, idx) { posToNum[pos.r + ',' + pos.c] = idx + 1; });
+    placed.forEach(function(p) { p.number = posToNum[p.r0 + ',' + p.c0]; });
+}
+
+/** Rebuilds a puzzle from a saved layout [{word,r0,c0,dir}] and the clue pool. */
+function cwRestore(layout, N, clues) {
+    const grid = Array.from({ length: N }, () => Array(N).fill(null));
+    const placed = [];
+    for (const l of layout) {
+        const entry = clues.find(function(c) { return c.word === l.word; });
+        if (!entry || l.r0 < 0 || l.c0 < 0 || l.r0 >= N || l.c0 >= N) return null;
+        if ((l.dir === 'ACROSS' ? l.c0 : l.r0) + l.word.length > N) return null;
+        cwPlace(grid, l.r0, l.c0, l.dir, l.word);
+        placed.push({ entry, r0: l.r0, c0: l.c0, dir: l.dir, word: l.word });
+    }
+    if (!placed.length) return null;
+    cwNumber(placed);
+    return { grid, placed };
 }

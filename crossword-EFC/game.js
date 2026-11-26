@@ -38,6 +38,7 @@ const CW_CATEGORIES = [
 /* ── i18n strings ────────────────────────────────────────── */
 const CW_I18N = {
     'es-ES': {
+        newPuzzle: 'Nuevo',
         selectLevel:   'Elige el nivel',
         selectCategory:'Categoría:',
         start:         'Empezar',
@@ -71,6 +72,7 @@ const CW_I18N = {
         quitCancel:       'Cancelar',
     },
     'en-US': {
+        newPuzzle: 'New',
         selectLevel:   'Choose level',
         selectCategory:'Category:',
         start:         'Start',
@@ -104,6 +106,7 @@ const CW_I18N = {
         quitCancel:       'Cancel',
     },
     'eu-ES': {
+        newPuzzle: 'Berria',
         selectLevel:   'Aukeratu maila',
         selectCategory:'Kategoria:',
         start:         'Hasi',
@@ -263,7 +266,10 @@ const CrosswordGame = {
         try {
             localStorage.setItem(
                 'cw_progress_' + this._level + '_' + this._category,
-                JSON.stringify({ userGrid: this._userGrid, elapsed: this._elapsed })
+                JSON.stringify({
+                    userGrid: this._userGrid, elapsed: this._elapsed,
+                    layout: (this._placed || []).map(p => ({ word: p.word, r0: p.r0, c0: p.c0, dir: p.dir }))
+                })
             );
         } catch (_) { /* ignore */ }
     },
@@ -274,6 +280,18 @@ const CrosswordGame = {
             if (raw) return JSON.parse(raw);
         } catch (_) { /* ignore */ }
         return null;
+    },
+
+    /* Recently used words (keeps new puzzles different from the last ones) */
+    _recentWords() {
+        try { return new Set(JSON.parse(localStorage.getItem('cw_recent_words') || '[]')); }
+        catch (_) { return new Set(); }
+    },
+    _rememberWords(placed) {
+        try {
+            const list = [...this._recentWords(), ...placed.map(p => p.word)].slice(-80);
+            localStorage.setItem('cw_recent_words', JSON.stringify(list));
+        } catch (_) { /* ignore */ }
     },
 
     _clearSessionProgress() {
@@ -397,12 +415,18 @@ const CrosswordGame = {
         revealBtn?.addEventListener('click', () => this._revealWord());
 
         const retryBtn = document.getElementById('cw-retry-btn');
-        retryBtn?.addEventListener('click', () => this._startGame(this._level, this._category));
+        retryBtn?.addEventListener('click', () => this._startGame(this._level, this._category, true));
 
         const nextBtn = document.getElementById('cw-next-btn');
         nextBtn?.addEventListener('click', () => {
             if (this._level < 10) this._selectLevel(this._level + 1);
-            this._startGame(this._level, this._category);
+            this._startGame(this._level, this._category, true);
+        });
+
+        document.getElementById('cw-new-btn')?.addEventListener('click', () => {
+            this._clearSessionProgress();
+            clearInterval(this._timer);
+            this._startGame(this._level, this._category, true);
         });
 
         const menuBtn = document.getElementById('cw-menu-btn');
@@ -420,7 +444,7 @@ const CrosswordGame = {
     },
 
     /* ── Start game ─────────────────────────────────────── */
-    _startGame(level, category) {
+    _startGame(level, category, fresh) {
         const cfg = CW_LEVELS[level - 1];
         if (!cfg) return;
 
@@ -451,7 +475,17 @@ const CrosswordGame = {
 
         // Defer heavy generation to next tick so the spinner appears
         setTimeout(() => {
-            const result = cwBuild(pool, cfg.size, cfg.target, 30);
+            // Resume the saved puzzle only from the Start button; Retry / Next / New always build a new one
+            let saved = fresh ? null : this._loadSessionProgress();
+            let result = null;
+            if (saved && saved.layout && saved.userGrid && saved.userGrid.length === cfg.size) {
+                result = cwRestore(saved.layout, cfg.size, (typeof CW_CLUES !== 'undefined') ? CW_CLUES : []);
+            }
+            if (!result) {
+                saved = null;
+                result = cwBuild(pool, cfg.size, cfg.target, 40, this._recentWords());
+                if (result) this._rememberWords(result.placed);
+            }
 
             if (!result) {
                 document.getElementById('cw-screen-game')?.removeAttribute('aria-busy');
@@ -474,10 +508,7 @@ const CrosswordGame = {
             this._userGrid = Array.from({ length: cfg.size }, () => Array(cfg.size).fill(null));
 
             // Attempt to restore saved progress
-            const saved = this._loadSessionProgress();
-            if (saved && saved.userGrid &&
-                saved.userGrid.length === cfg.size &&
-                saved.userGrid[0].length === cfg.size) {
+            if (saved && saved.userGrid) {
                 this._userGrid = saved.userGrid;
                 this._elapsed  = saved.elapsed || 0;
             } else {
@@ -1197,6 +1228,9 @@ const CrosswordGame = {
 
         const quitBtn = document.getElementById('cw-quit-btn');
         if (quitBtn) quitBtn.textContent = this._t('quit');
+
+        const newBtn = document.getElementById('cw-new-btn');
+        if (newBtn) newBtn.textContent = '🔀 ' + this._t('newPuzzle');
 
         this._updateTabButtons();
     },

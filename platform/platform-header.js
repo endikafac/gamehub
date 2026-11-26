@@ -19,6 +19,15 @@ const PlatformHeader = {
      */
     init(opts = {}) {
         this._opts = { gameName: '', gameIcon: '', rootPath: '../', ...opts };
+
+        // Framed inside the shell: the shell owns the header, we only sync state with it
+        this._embedded = window.self !== window.top;
+        if (this._embedded) { this._initEmbedded(); return; }
+
+        // Opened directly: go through the shell so the menu stays fixed
+        if (!opts.shell && this._redirectToShell()) return;
+        this._shell = !!opts.shell;
+
         this._inject();
         this._buildGamesMenu();
         this._bindEvents();
@@ -33,6 +42,139 @@ const PlatformHeader = {
 
         // React to language changes
         document.addEventListener('platformLanguageChanged', () => this._syncLanguage());
+
+        if (this._shell) this._bindShell();
+    },
+
+    // ─── Shell (persistent header + framed pages) ────────────────────────────
+
+    _safeRel(rel) {
+        rel = String(rel || '').replace(/^\/+/, '');
+        if (rel === '' || rel === 'index.html') return 'home.html';
+        if (!/^[A-Za-z0-9_\-./]+\.html$/.test(rel) || rel.includes('..') || rel.includes('//')) return 'home.html';
+        return rel;
+    },
+
+    _relFromHref(href) {
+        if (!href || href.charAt(0) === '#') return null;
+        let u, base;
+        try {
+            u = new URL(href, location.href);
+            base = new URL(this._opts.rootPath, location.href);
+        } catch (_) { return null; }
+        if (u.origin !== base.origin || !u.pathname.startsWith(base.pathname)) return null;
+        return this._safeRel(u.pathname.slice(base.pathname.length));
+    },
+
+    _redirectToShell() {
+        try {
+            const base = new URL(this._opts.rootPath, location.href);
+            const rel = location.pathname.slice(base.pathname.length);
+            if (!/^[A-Za-z0-9_\-./]+\.html$/.test(rel) || rel.includes('..') || rel === 'index.html') return false;
+            location.replace(base.pathname + 'index.html#/' + rel);
+            return true;
+        } catch (_) { return false; }
+    },
+
+    _initEmbedded() {
+        this._applyTheme();
+        this._applyHighContrast();
+
+        window.addEventListener('message', e => {
+            if (e.source !== window.parent) return;
+            const m = e.data || {};
+            if (m.type === 'hub:theme' && (m.theme === 'dark' || m.theme === 'light')) {
+                document.documentElement.setAttribute('data-theme', m.theme);
+                if (typeof MathMasterGame !== 'undefined' && MathMasterGame.setTheme) MathMasterGame.setTheme(m.theme);
+            } else if (m.type === 'hub:contrast') {
+                document.documentElement.setAttribute('data-high-contrast', String(!!m.value));
+                const setting = document.getElementById('setting-high-contrast');
+                if (setting) setting.checked = !!m.value;
+            } else if (m.type === 'hub:lang' && typeof PlatformI18n !== 'undefined') {
+                PlatformI18n.setLanguage(m.lang);
+            }
+        });
+
+        try {
+            const base = new URL(this._opts.rootPath, location.href);
+            const rel = location.pathname.slice(base.pathname.length);
+            window.parent.postMessage({
+                type: 'hub:page', rel,
+                name: this._opts.gameName || '', icon: this._opts.gameIcon || ''
+            }, location.origin === 'null' ? '*' : location.origin);
+        } catch (_) { /* ignore */ }
+    },
+
+    _bindShell() {
+        const frame = document.getElementById('hub-frame');
+        const main  = document.querySelector('.hub-main');
+        if (!frame) return;
+
+        window.addEventListener('message', e => this._onFrameMessage(e, frame, main));
+        frame.addEventListener('load', () => main?.classList.remove('loading'));
+
+        // Header / menu links load inside the frame; the header itself never reloads
+        document.addEventListener('click', e => {
+            const a = e.target.closest('#platform-header a[href], #platform-games-menu a[href], #platform-dropdown a[href]');
+            if (!a || a.classList.contains('skip-link')) return;
+            if (e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;
+            const rel = this._relFromHref(a.getAttribute('href'));
+            if (!rel) return;
+            e.preventDefault();
+            this._closeGamesMenu();
+            this._closeDropdown();
+            this._loadPage(rel);
+        });
+
+        window.addEventListener('hashchange', () => {
+            const rel = this._safeRel(location.hash.replace(/^#\/?/, ''));
+            if (rel !== this._current) this._loadPage(rel);
+        });
+
+        this._loadPage(this._safeRel(location.hash.replace(/^#\/?/, '')));
+    },
+
+    _loadPage(rel) {
+        const frame = document.getElementById('hub-frame');
+        const main  = document.querySelector('.hub-main');
+        if (!frame) return;
+        rel = this._safeRel(rel);
+        if (rel === this._current && frame.getAttribute('src')) return;
+        this._current = rel;
+        main?.classList.add('loading');
+        frame.setAttribute('src', this._opts.rootPath + rel);
+        this._setLocation(rel);
+    },
+
+    _setLocation(rel) {
+        try { history.replaceState(null, '', '#/' + rel); } catch (_) { /* ignore */ }
+        this._buildGamesMenu('/' + rel);
+    },
+
+    _onFrameMessage(e, frame, main) {
+        if (e.source !== frame.contentWindow) return;
+        const m = e.data || {};
+        if (m.type !== 'hub:page') return;
+        const rel = this._safeRel(m.rel);
+        this._current = rel;
+        main?.classList.remove('loading');
+        this._setLocation(rel);
+
+        const name = String(m.name || '').slice(0, 60);
+        const icon = String(m.icon || '').slice(0, 8);
+        const crumb = document.getElementById('platform-breadcrumb');
+        const label = document.getElementById('platform-game-name');
+        if (crumb && label) {
+            label.textContent = name ? (icon ? icon + ' ' : '') + name : '';
+            crumb.hidden = !name;
+        }
+        document.title = (name ? name + ' · ' : '') + 'Games Hub';
+    },
+
+    _postToFrame(msg) {
+        const frame = document.getElementById('hub-frame');
+        try { frame?.contentWindow?.postMessage(msg, location.origin === 'null' ? '*' : location.origin); }
+        catch (_) { /* ignore */ }
     },
 
     // ─── Build & inject ──────────────────────────────────────────────────────
@@ -55,13 +197,10 @@ const PlatformHeader = {
                         <span class="platform-logo-icon" aria-hidden="true">🎮</span>
                         <span class="platform-logo-text">${t('platformName')}</span>
                     </a>
-                    ${this._opts.gameName ? `
-                    <div class="platform-breadcrumb" aria-hidden="true">
+                    <div class="platform-breadcrumb" id="platform-breadcrumb" aria-hidden="true"${this._opts.gameName ? '' : ' hidden'}>
                         <span class="platform-breadcrumb-sep">›</span>
-                        <span class="platform-game-name" id="platform-game-name">
-                            ${this._opts.gameIcon ? `${this._opts.gameIcon} ` : ''}${this._opts.gameName}
-                        </span>
-                    </div>` : ''}
+                        <span class="platform-game-name" id="platform-game-name">${this._opts.gameName ? (this._opts.gameIcon ? this._opts.gameIcon + ' ' : '') + this._opts.gameName : ''}</span>
+                    </div>
                 </div>
 
                 <!-- Controls -->
@@ -212,9 +351,8 @@ const PlatformHeader = {
         });
     },
 
-    _buildGamesMenu() {
+    _buildGamesMenu(currentPath = window.location.pathname) {
         const root = this._opts.rootPath;
-        const currentPath = window.location.pathname;
 
         // Inline SVG flags (work in all browsers — no Unicode tag sequences)
         const IKURRINA = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 20" width="22" height="15" style="vertical-align:middle;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,.4)" aria-hidden="true"><rect width="30" height="20" fill="#CC0000"/><line x1="0" y1="0" x2="30" y2="20" stroke="#007840" stroke-width="7"/><line x1="30" y1="0" x2="0" y2="20" stroke="#007840" stroke-width="7"/><rect x="12.5" y="0" width="5" height="20" fill="white"/><rect x="0" y="7.5" width="30" height="5" fill="white"/></svg>';
@@ -238,7 +376,7 @@ const PlatformHeader = {
 
         menu.innerHTML = games.map(g => {
             const isCurrent = currentPath.includes(g.key) ||
-                (g.key === '/index.html' && (currentPath.endsWith('/') || currentPath.endsWith('/index.html')) && !currentPath.includes('-EFC') && !currentPath.includes('-EHS'));
+                (g.key === '/index.html' && (currentPath.endsWith('/') || currentPath.endsWith('/index.html') || currentPath.endsWith('/home.html')) && !currentPath.includes('-EFC') && !currentPath.includes('-EHS'));
             return `<a href="${g.href}" class="platform-game-link${isCurrent ? ' current' : ''}" role="menuitem">
                 <span class="platform-game-icon" aria-hidden="true">${g.icon}</span>
                 <span>${g.label}</span>
@@ -321,7 +459,8 @@ const PlatformHeader = {
         // If the current page is a game, redirect to hub
         const path = window.location.pathname;
         if (path.includes('/mathMaster') || path.includes('/snake') || path.includes('/tableMaster') || path.includes('/typingMaster') || path.includes('/wordSearch') || path.includes('/crossword') || path.includes('/geoQuiz')) {
-            window.location.href = this._opts.rootPath + 'index.html';
+            if (this._shell) this._loadPage('home.html');
+            else window.location.href = this._opts.rootPath + 'home.html';
         }
     },
 
@@ -348,6 +487,7 @@ const PlatformHeader = {
         const next    = current === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('games_hub_theme', next);
+        this._postToFrame({ type: 'hub:theme', theme: next });
         // Sync with game-level setting if available
         if (typeof MathMasterGame !== 'undefined' && MathMasterGame.setTheme) {
             MathMasterGame.setTheme(next);
@@ -366,6 +506,7 @@ const PlatformHeader = {
         const next = !current;
         document.documentElement.setAttribute('data-high-contrast', String(next));
         localStorage.setItem('games_hub_high_contrast', String(next));
+        this._postToFrame({ type: 'hub:contrast', value: next });
         const btn = document.getElementById('platform-contrast-btn');
         if (btn) btn.setAttribute('aria-pressed', String(next));
         // Sync with game high-contrast setting
@@ -410,6 +551,7 @@ const PlatformHeader = {
             const pill = e.target.closest('.lang-pill[data-lang]');
             if (pill && pill.closest('#platform-lang-group')) {
                 PlatformI18n.setLanguage(pill.dataset.lang);
+                this._postToFrame({ type: 'hub:lang', lang: pill.dataset.lang });
                 this._syncLanguage();
             }
         });
@@ -434,6 +576,10 @@ const PlatformHeader = {
      * @param {number} [duration] ms
      */
     showToast(message, type = 'info', duration = 3500) {
+        if (this._embedded) {
+            try { window.parent.PlatformHeader?.showToast(message, type, duration); } catch (_) { /* ignore */ }
+            return;
+        }
         const container = document.getElementById('platform-toasts');
         if (!container) return;
 
