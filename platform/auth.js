@@ -7,6 +7,7 @@
 const PlatformAuth = {
     currentUser: null,
     _listeners: [],
+    _authResolved: false,
 
     /**
      * Initialize auth module and start listening for state changes.
@@ -14,9 +15,12 @@ const PlatformAuth = {
     init() {
         if (!window.GamesHubAuth) {
             console.warn('[Auth] Firebase not configured. Running in local mode.');
+            this._authResolved = true;
+            this._notifyListeners(null);
             return;
         }
         GamesHubAuth.onAuthStateChanged(firebaseUser => {
+            this._authResolved = true;
             this._handleAuthChange(firebaseUser);
         });
     },
@@ -55,8 +59,11 @@ const PlatformAuth = {
      */
     onAuthStateChanged(cb) {
         this._listeners.push(cb);
-        // Fire immediately with current state
-        cb(this.currentUser);
+        // Only fire immediately if auth state has already been resolved by Firebase.
+        // Otherwise wait for the first Firebase callback to avoid a false null.
+        if (this._authResolved) {
+            cb(this.currentUser);
+        }
     },
 
     // ─── Private ─────────────────────────────────────────────────────────────

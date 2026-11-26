@@ -106,22 +106,24 @@
         #touch-pad { display: none; }
         @media (pointer: coarse) { #touch-pad { display: grid; } }
         #touch-pad {
-            grid-template-columns: 68px 68px 68px;
-            grid-template-rows: 68px 68px 68px;
+            grid-template-columns: 80px 80px 80px;
+            grid-template-rows: 80px 80px 80px;
             gap: 6px;
             touch-action: manipulation;
             user-select: none;
             -webkit-user-select: none;
+            justify-content: center;
+            margin-top: 8px;
         }
-        .tch { background: #1e293b; border: 2px solid #334155; border-radius: 12px;
-               font-size: 1.5rem; color: #e2e8f0; cursor: pointer;
+        .tch { background: #1e293b; border: 2px solid #334155; border-radius: 14px;
+               font-size: 1.8rem; color: #e2e8f0; cursor: pointer;
                display: flex; align-items: center; justify-content: center;
                touch-action: manipulation; user-select: none; -webkit-user-select: none;
                transition: background 0.1s, transform 0.1s; }
         .tch:active { background: #7c3aed; transform: scale(0.92); border-color: #a78bfa; }
         #tup     { grid-column: 2; grid-row: 1; }
         #tleft   { grid-column: 1; grid-row: 2; }
-        #tpause  { grid-column: 2; grid-row: 2; }
+        #tpause  { grid-column: 2; grid-row: 2; font-size: 1.3rem; }
         #tright  { grid-column: 3; grid-row: 2; }
         #tdown   { grid-column: 2; grid-row: 3; }
     </style>
@@ -512,18 +514,23 @@ $('tpause')?.addEventListener('click', () => {
     else { $('ov-pause').classList.remove('show'); lastTick = performance.now(); }
 });
 
-// Swipe on canvas
+// Swipe on entire game area (not just canvas) for better mobile control
 let tx=null,ty=null;
-canvas.addEventListener('touchstart', e=>{
+const swipeTarget = $('game-wrap');
+swipeTarget.addEventListener('touchstart', e=>{
+    // Ignore touches on d-pad buttons
+    if(e.target.closest('#touch-pad')) return;
     tx=e.touches[0].clientX; ty=e.touches[0].clientY;
-    e.preventDefault();
+},{passive:true});
+swipeTarget.addEventListener('touchmove', e=>{
+    // Prevent scroll while swiping on the game
+    if(tx!==null) e.preventDefault();
 },{passive:false});
-canvas.addEventListener('touchmove', e=>{ e.preventDefault(); },{passive:false});
-canvas.addEventListener('touchend', e=>{
+swipeTarget.addEventListener('touchend', e=>{
     if(tx===null) return;
     const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty;
     tx=null; ty=null;
-    if(Math.abs(dx)<30&&Math.abs(dy)<30) return;
+    if(Math.abs(dx)<20&&Math.abs(dy)<20) return;
     if(Math.abs(dx)>Math.abs(dy)) tryDir(dx>0?{x:1,y:0}:{x:-1,y:0});
     else                           tryDir(dy>0?{x:0,y:1}:{x:0,y:-1});
 });
