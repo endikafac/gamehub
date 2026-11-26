@@ -4,7 +4,7 @@
  * Version: bump CACHE_VERSION to force cache refresh after deploys
  */
 
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v1.1.0';
 const STATIC_CACHE  = `games-hub-static-${CACHE_VERSION}`;
 const PAGE_CACHE    = `games-hub-pages-${CACHE_VERSION}`;
 
